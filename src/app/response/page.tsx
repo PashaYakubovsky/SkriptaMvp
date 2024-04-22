@@ -1,15 +1,10 @@
-// "use client";
-import Link from "next/link";
-import { RiComputerLine } from "react-icons/ri";
-
-// import { useState } from "react";
 import { openai } from "@/lib/openai";
-import { ChatCompletion } from "openai/resources/index.mjs";
+import dynamic from "next/dynamic";
 
 const getAiResponse = async () => {
-    const prompt = "Generate a film scenario.";
+    const prompt = "Generate a film scenario about Caravaggio art in the 21st century.";
     const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4",
         messages: [
             {
                 role: "system",
@@ -25,16 +20,25 @@ const getAiResponse = async () => {
     return response;
 };
 
+const CanvasStuff = dynamic(() => import("@/components/common/CanvasStuff"), {
+    ssr: false,
+});
+
 export default async function Generate() {
     const response = await getAiResponse();
     return (
         <main className="flex min-h-screen flex-col items-center flex-start">
-            <header className="h-[90px] bg-[#4B39EF] text-lg pt-[3rem] w-full px-4 text-white">
-                Here you go...
+            <header
+                id="header"
+                className="h-[90px] bg-[#4B39EF] text-lg pt-[3rem] w-full px-4 text-white relative">
+                <span className="relative z-10">Here you go...</span>
+                <CanvasStuff />
             </header>
 
-            <div>
-                <p>{response.choices[0].message.content}</p>
+            <div className="p-4 relative z-10">
+                <p className="text-lg mix-blend-color-burn">
+                    {response.choices[0].message.content}
+                </p>
             </div>
         </main>
     );
