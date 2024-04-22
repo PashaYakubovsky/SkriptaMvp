@@ -8,7 +8,7 @@ export default function Home() {
                 What Do You Want To Do?
             </header>
             <div className="flex flex-col items-start justify-start w-full h-[80vh] px-4 pt-[0.5rem] ">
-                <button className="w-[14rem] h-[12rem] shadow-lg rounded-md">
+                <Link href="/configuration" className="w-[14rem] h-[12rem] shadow-lg rounded-md">
                     <div className="h-[70%] bg-[#39D2C0] p-2 flex flex-col justify-between text-white text-sm	">
                         <div className="relative w-fit rounded-md overflow-hidden p-2">
                             <div className="absolute w-full h-full left-0 top-0 bg-white opacity-25"></div>
@@ -26,7 +26,7 @@ export default function Home() {
                     ">
                         Begin
                     </div>
-                </button>
+                </Link>
             </div>
         </main>
     );

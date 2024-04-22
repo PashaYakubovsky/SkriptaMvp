@@ -20,7 +20,7 @@ export default function Login() {
 
                 {/* CTA */}
                 <Link
-                    href="/configuration"
+                    href="/new"
                     className="w-full bg-[#4B39EF] h-[44px] rounded-lg text-white flex justify-center items-center">
                     Sign In
                 </Link>

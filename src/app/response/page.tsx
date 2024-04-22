@@ -3,21 +3,36 @@ import dynamic from "next/dynamic";
 
 const getAiResponse = async () => {
     const prompt = "Generate a film scenario about Caravaggio art in the 21st century.";
-    const response = await openai.chat.completions.create({
-        model: "gpt-4",
-        messages: [
-            {
-                role: "system",
-                content: "You are a film scenario creation AI assistant.",
-            },
-            {
-                role: "user",
-                content: prompt,
-            },
-        ],
-    });
+    try {
+        const response = await openai.chat.completions.create({
+            model: "gpt-4",
+            messages: [
+                {
+                    role: "system",
+                    content: "You are a film scenario creation AI assistant.",
+                },
+                {
+                    role: "user",
+                    content: prompt,
+                },
+            ],
+        });
 
-    return response;
+        return response;
+    } catch (error) {
+        console.error(error);
+
+        return {
+            success: false,
+            choices: [
+                {
+                    message: {
+                        content: "An error occurred while generating the response.",
+                    },
+                },
+            ],
+        };
+    }
 };
 
 const CanvasStuff = dynamic(() => import("@/components/common/CanvasStuff"), {
@@ -26,6 +41,7 @@ const CanvasStuff = dynamic(() => import("@/components/common/CanvasStuff"), {
 
 export default async function Generate() {
     const response = await getAiResponse();
+
     return (
         <main className="flex min-h-screen flex-col items-center flex-start">
             <header

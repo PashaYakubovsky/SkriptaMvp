@@ -15,28 +15,28 @@ export default function AIConfig() {
             <header className="h-[90px] bg-[#4B39EF] text-lg pt-[3rem] w-full px-4 text-white">
                 Vertical Film Script Generator
             </header>
-            <div className="px-4 mt-[0.5rem]">
+            <div className="px-4 mt-[0.5rem] flex flex-col w-full gap-4">
                 <span className="font-semibold text-sm">
                     Please answer the following questions to the best of your ability
                 </span>
 
-                <div className="mt-2">
+                <div className="mt-2 flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         How Many Episodes Should There Be?
                     </label>
                     <Input type="text" placeholder="eg. 100" />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         How Long Should Each Episode Be? (in minutes)
                     </label>
                     <Input type="text" placeholder="eg. 3" />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold block">Choose A Genre</label>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-[0.5rem]">
                         {[
                             "Action",
                             "Adventure",
@@ -54,10 +54,10 @@ export default function AIConfig() {
                     </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">What is your budget?</label>
 
-                    <div>
+                    <div className="flex flex-wrap gap-[0.5rem]">
                         <Badge text="Micro" active={false} />
                         <Badge text="Low" active={false} />
                         <Badge text="Medium" active={false} />
@@ -65,25 +65,25 @@ export default function AIConfig() {
                     </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         What Is The Primary Story Location?
                     </label>
                     <Input type="text" placeholder="eg. New York" />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         Number Of Main Characters (optional)
                     </label>
                     <Input type="text" placeholder="eg. 6" />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         Do You Have A Preference For The Main Character(s)' Ethnicity?
                     </label>
-                    <div>
+                    <div className="flex flex-wrap gap-[0.5rem]">
                         <Badge text="White" active={false} />
                         <Badge text="Black" active={false} />
                         <Badge text="Asian" active={false} />
@@ -93,7 +93,7 @@ export default function AIConfig() {
                     </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         Please Choose Some Desired Primary Filming Locations
                     </label>
@@ -104,19 +104,17 @@ export default function AIConfig() {
                     />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
-                        <div>
-                            <label className="text-lg font-semibold">
-                                PleAdd Main Characters By Type And Age (optional)
-                            </label>
-                            <Input type="text" placeholder="eg. Scientist, 50" />
-                            <Input type="text" placeholder="eg. Student, 20" />
-                            <Input type="text" placeholder="eg. Police Officer, 35" />
-                            <Input type="text" placeholder="eg. Teacher, 42" />
-                            <Input type="text" placeholder="eg. Creature, unknown age" />
-                        </div>
+                        PleAdd Main Characters By Type And Age (optional)
                     </label>
+                    <div className="flex flex-col gap-[0.25rem]">
+                        <Input type="text" placeholder="eg. Scientist, 50" />
+                        <Input type="text" placeholder="eg. Student, 20" />
+                        <Input type="text" placeholder="eg. Police Officer, 35" />
+                        <Input type="text" placeholder="eg. Teacher, 42" />
+                        <Input type="text" placeholder="eg. Creature, unknown age" />
+                    </div>
                     <span>Separate locations with 'and'</span>
                     <Input
                         type="text"
@@ -124,7 +122,7 @@ export default function AIConfig() {
                     />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         Emotional Events Or Behavior By Character (optional)
                     </label>
@@ -132,7 +130,7 @@ export default function AIConfig() {
                     <Input type="text" placeholder="eg. Murder of captain" />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         Please Choose Some Desired Primary Filming Locations
                     </label>
@@ -143,7 +141,7 @@ export default function AIConfig() {
                     />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         Emotional Add A Story Reference From A Film Or Novel (optional){" "}
                     </label>
@@ -153,14 +151,14 @@ export default function AIConfig() {
                     />
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">Language</label>
                     <div>
                         <Badge text="English" active />
                     </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col gap-2">
                     <label className="text-lg font-semibold">
                         Additional Elements That Should Be Included? (optional)
                     </label>
@@ -172,7 +170,7 @@ export default function AIConfig() {
                 </div>
 
                 <Link
-                    href="/new"
+                    href="/response"
                     className="w-fit px-2 bg-[#4B39EF] h-[44px] rounded-lg text-white flex justify-center items-center">
                     Generate Skripta
                 </Link>
