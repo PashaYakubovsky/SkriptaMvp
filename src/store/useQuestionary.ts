@@ -22,7 +22,7 @@ type State = {
 export const useQuestionary = create<State>((set, get) => ({
     episodes: 1,
     episodeLength: 3,
-    genre: "action",
+    genre: "Action",
     budget: "medium",
     primaryStoryLocation: "",
     mainCharacters: [],
