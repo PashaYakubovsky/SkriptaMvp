@@ -1,6 +1,8 @@
+import { openai } from "@/lib/openai";
 import { parseFilmScript } from "@/utils/parseFilmScript";
 import { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 export const getAiResponse = async (seriesId: string) => {
     let prompt = "";
@@ -27,18 +29,20 @@ export const getAiResponse = async (seriesId: string) => {
 
             if (!filmScript) throw new Error("No film script found.");
 
+            const initialMessages: ChatCompletionMessageParam[] = [
+                {
+                    role: "system",
+                    content: "You are a film scenario creation AI assistant.",
+                },
+                {
+                    role: "user",
+                    content: prompt,
+                },
+            ];
+
             const response = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
-                messages: [
-                    {
-                        role: "system",
-                        content: "You are a film scenario creation AI assistant.",
-                    },
-                    {
-                        role: "user",
-                        content: prompt,
-                    },
-                ],
+                messages: initialMessages,
             });
 
             const newSeries = await fetch("api/series", {
@@ -49,20 +53,7 @@ export const getAiResponse = async (seriesId: string) => {
                 body: JSON.stringify({
                     userId: "xwxoyk",
                     filmScriptId: filmScript.id,
-                    history: JSON.stringify([
-                        {
-                            role: "system",
-                            content: "You are a film scenario creation AI assistant.",
-                        },
-                        {
-                            role: "user",
-                            content: prompt,
-                        },
-                        {
-                            role: "system",
-                            content: response.choices[0].message.content,
-                        },
-                    ]),
+                    history: JSON.stringify([...initialMessages, response.choices[0].message]),
                 }),
             });
 
