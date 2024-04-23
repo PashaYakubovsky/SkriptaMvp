@@ -347,7 +347,11 @@ export default function AIConfig() {
                             setLoading(false);
                         }
                     }}
-                    className="w-fit px-2 bg-[#4B39EF] h-[44px] rounded-lg text-white flex justify-center items-center">
+                    className="
+                    w-fit px-2 bg-[#4B39EF] h-[44px] rounded-lg 
+                    text-white flex justify-center items-center 
+                    hover:bg-[#4B39EF] hover:scale-105
+                    active:scale-95 transition-all duration-300 ease-in-out">
                     Generate Skripta
                 </button>
             </div>

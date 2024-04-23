@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import { Rubik } from "next/font/google";
 
 interface PageWrapperProps {
     children: React.ReactNode;
 }
 
+const font = Rubik({ subsets: ["latin"] });
 const PageWrapper = ({ children }: PageWrapperProps) => {
     useEffect(() => {
         const url = new URL(window.location.href);
@@ -24,10 +26,10 @@ const PageWrapper = ({ children }: PageWrapperProps) => {
     });
 
     return (
-        <>
+        <div className={font.className}>
             {children}
             <Toaster />
-        </>
+        </div>
     );
 };
 

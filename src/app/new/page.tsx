@@ -8,7 +8,13 @@ export default function Home() {
                 What Do You Want To Do?
             </header>
             <div className="flex flex-col items-start justify-start w-full h-[80vh] px-4 pt-[0.5rem] ">
-                <Link href="/configuration" className="w-[14rem] h-[12rem] shadow-lg rounded-md">
+                <Link
+                    href="/configuration"
+                    className="
+                        w-[14rem] h-[12rem] shadow-md rounded-md
+                        hover:shadow-xl hover:scale-105
+                        cursor-pointer active:scale-95 
+                        transform transition duration-300 ease-in-out">
                     <div className="h-[70%] bg-[#39D2C0] p-2 flex flex-col justify-between text-white text-sm	">
                         <div className="relative w-fit rounded-md overflow-hidden p-2">
                             <div className="absolute w-full h-full left-0 top-0 bg-white opacity-25"></div>

@@ -1,6 +1,5 @@
 "use client";
 import { ISeries } from "@/models/Series";
-import { getAiResponse } from "../../actions";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -30,17 +29,17 @@ export default async function Generate(props: { params: { seriesId: string } }) 
             });
 
             try {
-                const response = await getAiResponse(props.params.seriesId);
-                if (!response.success) {
+                const response = await axios.get(`/api/series/${props.params.seriesId}`);
+                const responseJson = await response.data;
+                if (!responseJson?.data) {
                     toast.error("No series found. Generating a new series...");
+                    return;
                 }
 
-                debugger;
-
                 // replace slug in url with new series id
-                window.history.replaceState({}, "", `/response/${response.data.id}`);
+                window.history.replaceState({}, "", `/response/${responseJson.data.id}`);
 
-                let history = response.data.history as { role: string; content: string }[];
+                let history = responseJson.data.history as { role: string; content: string }[];
                 if (typeof history === "string") {
                     history = JSON.parse(history);
                 }
