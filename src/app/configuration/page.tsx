@@ -149,7 +149,7 @@ export default function AIConfig() {
                     </label>
                     <Input
                         type="text"
-                        placeholder="eg. New York"
+                        placeholder="eg. New York City"
                         value={primaryStoryLocation}
                         onChange={e => {
                             setConfig({ primaryStoryLocation: e.target.value });
@@ -383,7 +383,7 @@ const MainCharactersCreation = () => {
     return (
         <div className="flex flex-col gap-2">
             <label className="text-lg font-semibold">
-                PleAdd Main Characters By Type And Age (optional)
+                Please Add Main Characters By Type And Age (optional)
             </label>
             <span>Separate characters with a comma ',' and add their age after a space</span>
 
