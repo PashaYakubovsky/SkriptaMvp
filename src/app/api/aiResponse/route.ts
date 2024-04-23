@@ -4,7 +4,7 @@ import { HttpStatusCode } from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
-export const getAiResponse = async (seriesId: string) => {
+const getAiResponse = async (seriesId: string) => {
     let prompt = "";
     try {
         const sResponse = await fetch(`api/series/${seriesId}`, {
