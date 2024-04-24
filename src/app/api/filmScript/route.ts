@@ -3,19 +3,19 @@ import { HttpStatusCode } from "axios";
 import FilmScript from "@/models/FilmScript";
 import { NextRequest, NextResponse } from "next/server";
 
+const userId = "xwxoyk";
+
 export async function POST(req: NextRequest) {
     try {
         await connectMongo();
         const body = await req.json();
 
-        const existingFilmScript = await FilmScript.findOne({ userId: body.userId });
+        const existingFilmScript = await FilmScript.findOne({ userId });
         if (existingFilmScript) {
             // update the existing film script
-            const updatedFilmScript = await FilmScript.findOneAndUpdate(
-                { userId: body.userId },
-                body,
-                { new: true }
-            );
+            const updatedFilmScript = await FilmScript.findOneAndUpdate({ userId }, body, {
+                new: true,
+            });
             return NextResponse.json(
                 { filmScript: updatedFilmScript, message: "Your FilmScript has been updated" },
                 { status: HttpStatusCode.Ok }
@@ -32,7 +32,6 @@ export async function POST(req: NextRequest) {
     }
 }
 export async function GET(req: NextRequest) {
-    const userId = "xwxoyk";
     if (!userId) {
         return NextResponse.json(
             { message: "userId is required" },

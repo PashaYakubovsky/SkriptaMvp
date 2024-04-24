@@ -1,12 +1,13 @@
 "use client";
 import Input from "@/components/common/Input";
 import { useQuestionary } from "@/store/useQuestionary";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { createFilmScript } from "../actions";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { RotatingLines } from "react-loader-spinner";
+import axios from "axios";
 
 export default function AIConfig() {
     const router = useRouter();
@@ -29,6 +30,15 @@ export default function AIConfig() {
         mainCharactersLength,
         storyReference,
     } = config;
+
+    useEffect(() => {
+        const init = async () => {
+            const res = await axios.get("/api/filmScript");
+            const filmScript = res.data.data[0];
+            if (filmScript) setConfig(filmScript);
+        };
+        init();
+    }, []);
 
     if (loading)
         return (
@@ -322,7 +332,6 @@ export default function AIConfig() {
                         }
                         setLoading(true);
                         try {
-                            debugger;
                             await createFilmScript({
                                 episodeLength,
                                 episodes,
