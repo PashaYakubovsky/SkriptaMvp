@@ -325,7 +325,7 @@ export default function AIConfig() {
 
                 <button
                     onClick={async () => {
-                        const userId = localStorage.getItem("userId");
+                        const userId = "xwxoyk";
                         if (!userId) {
                             toast.error("userId not found");
                             return;

@@ -92,7 +92,8 @@ export default async function Generate(props: { params: { seriesId: string } }) 
             <div className="flex items-center justify-center h-[100vh] w-full">
                 <RotatingLines
                     visible={true}
-                    width="196"
+                    width="150"
+                    strokeColor="#4B39EF"
                     strokeWidth="5"
                     animationDuration="0.75"
                     ariaLabel="rotating-lines-loading"
