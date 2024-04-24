@@ -1,13 +1,14 @@
 "use server";
 
+import axios from "axios";
+
 export async function createFilmScript(body: Record<string, any>) {
-    const response = await fetch("http://localhost:3000/api/filmScript", {
-        method: "POST",
+    const response = await axios.post("api/filmScript", {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body,
     });
 
-    return response.json();
+    return response.data;
 }
