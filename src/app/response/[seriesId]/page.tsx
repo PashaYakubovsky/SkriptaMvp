@@ -1,6 +1,7 @@
 "use client";
 import { ISeries } from "@/models/Series";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { RotatingLines } from "react-loader-spinner";
@@ -18,19 +19,22 @@ const createNewEpisode = async ({
 };
 
 export default async function Generate(props: { params: { seriesId: string } }) {
+    const router = useRouter();
     const [{ history, loading }, setConfig] = useState({
         history: [] as { role: string; content: string }[],
         loading: false,
     });
     useEffect(() => {
         const init = async () => {
+            if (loading) return;
+
             setConfig(state => {
                 return { ...state, loading: true };
             });
 
             try {
                 const response = await axios.get(`/api/series/${props.params.seriesId}`);
-                const responseJson = await response.data;
+                const responseJson = response.data;
                 if (!responseJson?.data) {
                     toast.error("No series found. Generating a new series...");
                     return;
@@ -38,6 +42,7 @@ export default async function Generate(props: { params: { seriesId: string } }) 
 
                 // replace slug in url with new series id
                 window.history.replaceState({}, "", `/response/${responseJson.data.id}`);
+                router.replace(`/response/${responseJson.data.id}`);
 
                 let history = responseJson.data.history as { role: string; content: string }[];
                 if (typeof history === "string") {

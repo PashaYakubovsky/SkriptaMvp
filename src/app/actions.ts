@@ -1,13 +1,10 @@
-"use server";
-
 import axios from "axios";
 
 export async function createFilmScript(body: Record<string, any>) {
-    const response = await axios.post("api/filmScript", {
+    const response = await axios.post("api/filmScript", body, {
         headers: {
             "Content-Type": "application/json",
         },
-        body,
     });
 
     return response.data;

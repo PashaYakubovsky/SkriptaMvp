@@ -2,8 +2,10 @@ import { openai } from "@/lib/openai";
 import Series from "@/models/Series";
 import connectMongo from "@/utils/connectMongo";
 import { HttpStatusCode } from "axios";
-
+import { parseFilmScript } from "@/utils/parseFilmScript";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { NextRequest, NextResponse } from "next/server";
+import FilmScript from "@/models/FilmScript";
 
 export async function POST(req: NextRequest) {
     try {
@@ -64,12 +66,74 @@ export async function DELETE(req: NextRequest) {
     }
 }
 
+const getAiResponse = async (seriesId: string) => {
+    let prompt = "";
+    let series = null;
+    try {
+        try {
+            series = await Series.findById(seriesId);
+        } catch (error) {}
+
+        if (!series) {
+            console.error("Series not found", seriesId);
+        }
+
+        if (!series || series.length === 0) {
+            const filmScript = await FilmScript.findOne({ userId: "xwxoyk" });
+
+            prompt = parseFilmScript({ filmScript });
+
+            if (!filmScript) throw new Error("No film script found.");
+
+            const initialMessages: ChatCompletionMessageParam[] = [
+                {
+                    role: "system",
+                    content: "You are a film scenario creation AI assistant.",
+                },
+                {
+                    role: "user",
+                    content: prompt,
+                },
+            ];
+
+            const response = await openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: initialMessages,
+            });
+
+            const newSeries = await Series.create({
+                userId: "xwxoyk",
+                filmScriptId: filmScript.id,
+                history: [...initialMessages, response.choices[0].message],
+            });
+
+            return {
+                success: true,
+                data: newSeries,
+            };
+        } else {
+            return {
+                success: true,
+                data: series,
+            };
+        }
+    } catch (error) {
+        console.error(error);
+
+        return {
+            success: false,
+            message: "An error occurred while generating the response.",
+        };
+    }
+};
+
 export async function GET(req: NextRequest) {
-    const id = req.url.split("/").pop();
+    const seriesId = req.url.split("/").pop() as string;
 
     try {
         await connectMongo();
-        const series = await Series.findOne({ _id: id });
+        const aiResponse = await getAiResponse(seriesId);
+        const series = aiResponse.data;
 
         return NextResponse.json({ data: series });
     } catch (error) {

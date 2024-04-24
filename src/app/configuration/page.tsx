@@ -322,6 +322,7 @@ export default function AIConfig() {
                         }
                         setLoading(true);
                         try {
+                            debugger;
                             await createFilmScript({
                                 episodeLength,
                                 episodes,
