@@ -35,13 +35,8 @@ export default async function Generate(props: { params: { seriesId: string } }) 
             try {
                 const response = await axios.get(`/api/series/${props.params.seriesId}`);
                 const responseJson = response.data;
-                if (!responseJson?.data) {
-                    toast.error("No series found. Generating a new series...");
-                    return;
-                }
 
                 // replace slug in url with new series id
-                window.history.replaceState({}, "", `/response/${responseJson.data.id}`);
                 router.replace(`/response/${responseJson.data.id}`);
 
                 let history = responseJson.data.history as { role: string; content: string }[];
@@ -51,6 +46,7 @@ export default async function Generate(props: { params: { seriesId: string } }) 
                 const h = history.filter(
                     message =>
                         message.role !== "user" &&
+                        message.role !== "system" &&
                         message.content !== "You are a film scenario creation AI assistant."
                 );
                 setConfig({ history: h, loading: false });

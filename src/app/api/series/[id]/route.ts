@@ -91,6 +91,17 @@ const getAiResponse = async (seriesId: string) => {
                     content: "You are a film scenario creation AI assistant.",
                 },
                 {
+                    // specify output format
+                    role: "system",
+                    content: `
+                    Output Format:
+                    1. Opening Scene (30 seconds)
+                    2. Middle Scenes (1 minute 30 seconds)
+                    3. Climax (30 seconds)
+                    4. Ending (30 seconds)
+                    `,
+                },
+                {
                     role: "user",
                     content: prompt,
                 },
