@@ -43,6 +43,7 @@ export default async function Generate(props: { params: { seriesId: string } }) 
                 if (typeof history === "string") {
                     history = JSON.parse(history);
                 }
+                debugger;
                 const h = history.filter(
                     message =>
                         message.role !== "user" &&

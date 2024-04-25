@@ -1,17 +1,31 @@
-import Link from "next/link";
+"use client";
 import { RiComputerLine } from "react-icons/ri";
+import { Text, Card } from "@geist-ui/core";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+    const router = useRouter();
     return (
-        <main className="flex min-h-screen flex-col items-center flex-start">
-            <header className="h-[90px] bg-[#4B39EF] text-lg pt-[3rem] w-full px-4 text-white">
+        <main className="flex min-h-screen flex-col items-start flex-start px-4">
+            <Text
+                h2
+                className="border-b-2 border-black !w-full !h-[4rem] !flex inter-center
+                justify-center 
+                align-center
+                align-middle
+                text-center
+            ">
                 What Do You Want To Do?
-            </header>
+            </Text>
             <div className="flex flex-col items-start justify-start w-full h-[80vh] px-4 pt-[0.5rem] ">
-                <Link
+                <Card
+                    onClick={() => {
+                        router.push("/configuration");
+                    }}
+                    hoverable
                     href="/configuration"
                     className="
-                        w-[14rem] h-[12rem] shadow-md rounded-md
+                        !w-[14rem] !h-[12rem] shadow-md rounded-md
                         hover:shadow-xl hover:scale-105
                         cursor-pointer active:scale-95 
                         transform transition duration-300 ease-in-out">
@@ -26,13 +40,13 @@ export default function Home() {
                             <div>Script Generation</div>
                         </div>
                     </div>
-                    <div
+                    <Text
                         className="h-[30%] flex 
                     items-center justify-center text-2xl
                     ">
                         Begin
-                    </div>
-                </Link>
+                    </Text>
+                </Card>
             </div>
         </main>
     );

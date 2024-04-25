@@ -44,9 +44,6 @@ export const parseFilmScript = ({ filmScript }: { filmScript: IFilmScript }) => 
               ? `The main characters should be ${mainCharactersLength} in number`
               : ""
       }
-
-    
-      Please write episode 1 while understanding that the series should feature one overarching story will mini-arcs throughout. Each episode should end on a minor or major cliffhanger to keep viewers coming back.
     `;
 
     return prompt;

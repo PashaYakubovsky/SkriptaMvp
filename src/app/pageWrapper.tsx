@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Rubik } from "next/font/google";
+import { GeistProvider, CssBaseline } from "@geist-ui/core";
 
 interface PageWrapperProps {
     children: React.ReactNode;
@@ -26,10 +27,13 @@ const PageWrapper = ({ children }: PageWrapperProps) => {
     });
 
     return (
-        <div className={font.className}>
-            {children}
-            <Toaster />
-        </div>
+        <GeistProvider>
+            <CssBaseline />
+            <div className={font.className}>
+                {children}
+                <Toaster />
+            </div>
+        </GeistProvider>
     );
 };
 

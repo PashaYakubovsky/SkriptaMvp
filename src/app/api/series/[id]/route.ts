@@ -1,5 +1,5 @@
 import { openai } from "@/lib/openai";
-import Series from "@/models/Series";
+import Series, { ISeries } from "@/models/Series";
 import connectMongo from "@/utils/connectMongo";
 import { HttpStatusCode } from "axios";
 import { parseFilmScript } from "@/utils/parseFilmScript";
@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
         await connectMongo();
         const body = await req.json();
         const id = req.url.split("/").pop();
+        debugger;
 
         if (!id) {
             return NextResponse.json(
@@ -20,15 +21,26 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const series = await Series.findById(id);
+        const history = series.history.slice();
+        const isFirstMessage = history.every(message => message.role === "system");
+
+        if (isFirstMessage) {
+            history.push({
+                role: "user",
+                content:
+                    "Please write episode 1 while understanding that the series should feature one overarching story will mini-arcs throughout. Each episode should end on a minor or major cliffhanger to keep viewers coming back.",
+            });
+        }
+
         const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
-            messages: body.history,
+            messages: series.history,
         });
 
-        const history = body.history.slice();
         history.push(response.choices[0].message);
 
-        const series = await Series.findByIdAndUpdate(
+        const updatedSeries = await Series.findByIdAndUpdate(
             id,
             {
                 ...body,
@@ -38,7 +50,7 @@ export async function POST(req: NextRequest) {
         );
 
         return NextResponse.json(
-            { series, message: "Your Series updated" },
+            { series: updatedSeries, message: "Your Series updated" },
             { status: HttpStatusCode.Created }
         );
     } catch (error) {
@@ -91,31 +103,25 @@ const getAiResponse = async (seriesId: string) => {
                     content: "You are a film scenario creation AI assistant.",
                 },
                 {
-                    // specify output format
                     role: "system",
                     content: `
-                    Output Format:
-                    1. Opening Scene (30 seconds)
-                    2. Middle Scenes (1 minute 30 seconds)
-                    3. Climax (30 seconds)
-                    4. Ending (30 seconds)
+                        Output Format:
+                        1. Opening Scene (30 seconds)
+                        2. Middle Scenes (1 minute 30 seconds)
+                        3. Climax (30 seconds)
+                        4. Ending (30 seconds)
                     `,
                 },
                 {
-                    role: "user",
+                    role: "system",
                     content: prompt,
                 },
             ];
 
-            const response = await openai.chat.completions.create({
-                model: "gpt-3.5-turbo",
-                messages: initialMessages,
-            });
-
             const newSeries = await Series.create({
                 userId: "xwxoyk",
                 filmScriptId: filmScript.id,
-                history: [...initialMessages, response.choices[0].message],
+                history: initialMessages,
             });
 
             return {
