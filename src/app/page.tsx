@@ -19,8 +19,14 @@ export default function Home() {
                     onClick={() => {
                         router.push("/login");
                     }}
+<<<<<<< HEAD
                     scale={1}
                     className="!w-fit !relative !z-10"
+=======
+                    scale={3}
+                    type="secondary-light"
+                    className="!w-full"
+>>>>>>> 436848c62c84e8bad6aa655b09c3205d1e59f086
                     placeholder={undefined}
                     onPointerEnterCapture={undefined}
                     onPointerLeaveCapture={undefined}>
