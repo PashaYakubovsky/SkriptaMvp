@@ -9,9 +9,6 @@
 # testing
 /coverage
 
-# next
-/.next
-/out
 
 # production
 /build
