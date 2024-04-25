@@ -51,11 +51,7 @@ export default function Login() {
                                 }
                             }}
                             htmlType={config.showPassword ? "text" : "password"}
-<<<<<<< HEAD
                             className="w-full !text-white"
-=======
-                            className="w-full"
->>>>>>> 436848c62c84e8bad6aa655b09c3205d1e59f086
                             width="100%"
                             placeholder="Password"
                             onPointerEnterCapture={undefined}
@@ -79,10 +75,6 @@ export default function Login() {
                     onClick={() => {
                         router.push("/new");
                     }}
-<<<<<<< HEAD
-=======
-                    className="w-full bg-[#4B39EF] h-[44px] rounded-lg text-white flex justify-center items-center"
->>>>>>> 436848c62c84e8bad6aa655b09c3205d1e59f086
                     placeholder={undefined}
                     onPointerEnterCapture={undefined}
                     onPointerLeaveCapture={undefined}>
