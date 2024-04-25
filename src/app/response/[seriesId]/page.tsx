@@ -4,7 +4,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { RotatingLines } from "react-loader-spinner";
+import { Text, Button, Card, Page } from "@geist-ui/core";
+import { Courier_Prime } from "next/font/google";
+
+const font = Courier_Prime({
+    weight: ["400", "700"],
+    subsets: ["latin"],
+});
 
 const createNewEpisode = async ({
     history,
@@ -43,7 +49,7 @@ export default async function Generate(props: { params: { seriesId: string } }) 
                 if (typeof history === "string") {
                     history = JSON.parse(history);
                 }
-                debugger;
+
                 const h = history.filter(
                     message =>
                         message.role !== "user" &&
@@ -76,7 +82,12 @@ export default async function Generate(props: { params: { seriesId: string } }) 
                 series: ISeries & { history: { role: string; content: string }[]; id: string };
             };
 
-            const h = response.series.history.filter(message => message.role !== "user");
+            const h = response.series.history.filter(
+                message =>
+                    message.role !== "user" &&
+                    message.role !== "system" &&
+                    message.content !== "You are a film scenario creation AI assistant."
+            );
             setConfig(state => {
                 return { ...state, history: h, loading: false };
             });
@@ -88,42 +99,37 @@ export default async function Generate(props: { params: { seriesId: string } }) 
         }
     };
 
-    if (loading)
-        return (
-            <div className="flex items-center justify-center h-[100vh] w-full">
-                <RotatingLines
-                    visible={true}
-                    width="150"
-                    strokeColor="#4B39EF"
-                    strokeWidth="5"
-                    animationDuration="0.75"
-                    ariaLabel="rotating-lines-loading"
-                />
-            </div>
-        );
-
     return (
-        <main className="flex min-h-screen flex-col items-center flex-start mb-[2rem] gap-5">
+        <main className="flex min-h-screen flex-col items-start flex-start mb-[2rem] gap-5">
             <header
                 id="header"
-                className="h-[90px] bg-[#4B39EF] text-lg pt-[3rem] w-full px-4 text-white relative">
-                <span className="relative z-10">Here you go...</span>
+                className="h-[90px] bg-[#000] text-lg pt-[3rem] w-full  text-white relative">
+                <Text h2 className="relative z-10 px-4">
+                    Here you go...
+                </Text>
             </header>
 
-            {history.map((item, index) => {
-                return (
-                    <div key={index} className="p-4 relative z-10 my-2">
-                        <h3 className="font-bold">episode {index + 1}</h3>
-                        <p className="text-lg">{item.content}</p>
-                    </div>
-                );
-            })}
+            <div className="flex flex-col gap-5 px-4 xl:max-w-[1200px] m-auto">
+                {history.map((item, index) => {
+                    return (
+                        <Card key={index} className={`p-4 relative z-10 my-2 ${font.className}`}>
+                            <h3 className="font-bold">episode {index + 1}</h3>
+                            <p className="text-lg">{item.content}</p>
+                        </Card>
+                    );
+                })}
 
-            <button
-                onClick={handleCreateNewEpisode}
-                className="rounded-lg p-2 bg-indigo-600 text-zinc-100 active:scale-125 transition-all hover:bg-indigo-800">
-                Generate new episode
-            </button>
+                <Button
+                    loading={loading}
+                    onPointerEnterCapture={null}
+                    type="secondary"
+                    onClick={handleCreateNewEpisode}
+                    className="rounded-lg p-2 bg-indigo-600 text-zinc-100 active:scale-125 transition-all hover:bg-indigo-800"
+                    placeholder={undefined}
+                    onPointerLeaveCapture={undefined}>
+                    Generate new episode
+                </Button>
+            </div>
         </main>
     );
 }

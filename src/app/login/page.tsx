@@ -5,6 +5,7 @@ import { Page, Text, Input, Button, Link } from "@geist-ui/core";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Hero from "@/components/threejs/Hero";
 
 export default function Login() {
     const router = useRouter();
@@ -12,23 +13,31 @@ export default function Login() {
         showPassword: false,
     });
     return (
-        <Page>
-            <Text h1>Skripta...</Text>
+        <div className="bg-black !h-screen">
+            <Text h1 className="m-auto text-center">
+                Skripta...
+            </Text>
 
-            <div className="flex flex-col items-start justify-start w-full h-[80vh] max-w-[600px]">
-                <Text h2 className="text-4xl my-2">
+            <div className="flex flex-col items-center justify-center w-full h-[80vh] max-w-[600px] m-auto">
+                <Text h2 className="text-4xl !text-white">
                     Welcome Back
                 </Text>
-                <Text p className="mb-2 text-sm">
+                <Text p className="!mb-4 !mt-0 text-sm !text-white">
                     Let's get started by filling out the form below.
                 </Text>
 
-                <div className="w-full gap-2 mb-2 flex flex-col">
+                <Hero />
+
+                <div className="w-full gap-2 mb-2 flex flex-col bg-black relative z-10">
                     <Input
+                        ref={node => {
+                            if (node) {
+                                node.style.color = "#fff";
+                            }
+                        }}
                         inputMode="email"
-                        className="w-full"
+                        className="w-full !text-white"
                         width="100%"
-                        type="secondary"
                         placeholder="Email"
                         onPointerEnterCapture={undefined}
                         onPointerLeaveCapture={undefined}
@@ -36,10 +45,14 @@ export default function Login() {
                     />
                     <div className="relative w-full">
                         <Input
+                            ref={node => {
+                                if (node) {
+                                    node.style.color = "#fff";
+                                }
+                            }}
                             htmlType={config.showPassword ? "text" : "password"}
-                            className="w-full"
+                            className="w-full !text-white"
                             width="100%"
-                            type="secondary"
                             placeholder="Password"
                             onPointerEnterCapture={undefined}
                             onPointerLeaveCapture={undefined}
@@ -59,11 +72,9 @@ export default function Login() {
                 {/* CTA */}
                 <Button
                     width="100%"
-                    type="secondary"
                     onClick={() => {
                         router.push("/new");
                     }}
-                    className="w-full bg-[#4B39EF] h-[44px] rounded-lg text-white flex justify-center items-center"
                     placeholder={undefined}
                     onPointerEnterCapture={undefined}
                     onPointerLeaveCapture={undefined}>
@@ -71,7 +82,7 @@ export default function Login() {
                 </Button>
 
                 {/* Redirect to registration */}
-                <div className="mt-[1rem] text-sm">
+                <div className="mt-[1rem] text-sm text-white">
                     Don't have an account?{" "}
                     <Link
                         className="!text-[#4B39EF]"
@@ -83,6 +94,6 @@ export default function Login() {
                     </Link>
                 </div>
             </div>
-        </Page>
+        </div>
     );
 }
