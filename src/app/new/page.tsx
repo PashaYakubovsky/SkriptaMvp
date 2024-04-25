@@ -23,7 +23,6 @@ export default function Home() {
                         router.push("/configuration");
                     }}
                     hoverable
-                    href="/configuration"
                     className="
                         !w-[14rem] !h-[12rem] shadow-md rounded-md
                         hover:shadow-xl hover:scale-105

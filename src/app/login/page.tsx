@@ -30,15 +30,20 @@ export default function Login() {
                         width="100%"
                         type="secondary"
                         placeholder="Email"
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}
+                        crossOrigin={undefined}
                     />
                     <div className="relative w-full">
                         <Input
                             htmlType={config.showPassword ? "text" : "password"}
-                            type="password"
                             className="w-full"
                             width="100%"
                             type="secondary"
                             placeholder="Password"
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
+                            crossOrigin={undefined}
                         />
                         <button onClick={() => setConfig({ showPassword: !config.showPassword })}>
                             {config.showPassword ? (
@@ -58,14 +63,22 @@ export default function Login() {
                     onClick={() => {
                         router.push("/new");
                     }}
-                    className="w-full bg-[#4B39EF] h-[44px] rounded-lg text-white flex justify-center items-center">
+                    className="w-full bg-[#4B39EF] h-[44px] rounded-lg text-white flex justify-center items-center"
+                    placeholder={undefined}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}>
                     Sign In
                 </Button>
 
                 {/* Redirect to registration */}
                 <div className="mt-[1rem] text-sm">
                     Don't have an account?{" "}
-                    <Link className="!text-[#4B39EF]" href="/register">
+                    <Link
+                        className="!text-[#4B39EF]"
+                        href="/register"
+                        placeholder={undefined}
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}>
                         Sign Up here
                     </Link>
                 </div>

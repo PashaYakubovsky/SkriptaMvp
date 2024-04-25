@@ -18,7 +18,10 @@ export default function Home() {
                     }}
                     scale={3}
                     type="secondary-light"
-                    className="!w-full">
+                    className="!w-full"
+                    placeholder={undefined}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}>
                     Get Started
                     <div className="">
                         <IoIosArrowRoundForward className="w-[2.5rem] h-[2.5rem] text-white" />
