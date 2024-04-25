@@ -42,19 +42,6 @@ export default function AIConfig() {
         init();
     }, []);
 
-    // if (loading)
-    //     return (
-    //         <div className="flex items-center justify-center h-[100vh] w-full">
-    //             <RotatingLines
-    //                 visible={true}
-    //                 width="196"
-    //                 strokeWidth="5"
-    //                 animationDuration="0.75"
-    //                 ariaLabel="rotating-lines-loading"
-    //             />
-    //         </div>
-    //     );
-
     return (
         <>
             <Text h2 className="!w-full border-b-2 border-black text-center">
@@ -78,6 +65,9 @@ export default function AIConfig() {
                             onChange={e => {
                                 setConfig({ episodes: +e.target.value });
                             }}
+                            crossOrigin={undefined}
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -93,6 +83,9 @@ export default function AIConfig() {
                             onChange={e => {
                                 setConfig({ episodeLength: +e.target.value });
                             }}
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
+                            crossOrigin={undefined}
                         />
                     </div>
 
@@ -176,6 +169,9 @@ export default function AIConfig() {
                             onChange={e => {
                                 setConfig({ primaryStoryLocation: e.target.value });
                             }}
+                            crossOrigin={undefined}
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -192,6 +188,9 @@ export default function AIConfig() {
                             onChange={e => {
                                 setConfig({ mainCharactersLength: +e.target.value });
                             }}
+                            crossOrigin={undefined}
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -279,6 +278,9 @@ export default function AIConfig() {
                                             emotionalEvents[index] = emotionalEvent;
                                             setConfig({ emotionalEvents });
                                         }}
+                                        crossOrigin={undefined}
+                                        onPointerEnterCapture={undefined}
+                                        onPointerLeaveCapture={undefined}
                                     />
                                     <AiOutlinePlus
                                         onClick={() => {
@@ -301,7 +303,10 @@ export default function AIConfig() {
                             className="!rounded-xl bg-slate-400 !w-[3rem] !min-w-[auto] !p-0"
                             onClick={() => {
                                 setConfig({ emotionalEvents: [...emotionalEvents, ""] });
-                            }}></Button>
+                            }}
+                            placeholder={undefined}
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}></Button>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -318,6 +323,8 @@ export default function AIConfig() {
                             }}
                             type="secondary"
                             placeholder="eg. coffee shop and hotel and beach and office building"
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -332,6 +339,8 @@ export default function AIConfig() {
                             }}
                             type="secondary"
                             placeholder="eg. Pride and Prejudice, Star Trek TNG, Blazing Saddles"
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -361,6 +370,8 @@ export default function AIConfig() {
                             }}
                             type="secondary"
                             placeholder="eg. mental instability, murder, expensive clothes, sparse product placement for 'Dior'"
+                            onPointerEnterCapture={undefined}
+                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -400,7 +411,10 @@ export default function AIConfig() {
                                 toast.error((err as Error)?.message);
                                 setLoading(false);
                             }
-                        }}>
+                        }}
+                        placeholder={undefined}
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}>
                         Generate Script
                     </Button>
                 </div>

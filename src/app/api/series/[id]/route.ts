@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
         }
 
         const series = await Series.findById(id);
-        const history = series.history.slice();
+        const history = series.history.slice() as ChatCompletionMessageParam[];
         const isFirstMessage = history.every(message => message.role === "system");
 
         if (isFirstMessage) {

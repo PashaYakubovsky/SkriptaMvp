@@ -36,6 +36,9 @@ export const MainCharactersCreation = () => {
                                     newMainCharacters[index] = e.target.value;
                                     setConfig({ mainCharacters: newMainCharacters });
                                 }}
+                                crossOrigin={undefined}
+                                onPointerEnterCapture={undefined}
+                                onPointerLeaveCapture={undefined}
                             />
                             <AiOutlinePlus
                                 onClick={() => {
@@ -56,7 +59,10 @@ export const MainCharactersCreation = () => {
                     className="!rounded-xl bg-slate-400 !w-[3rem] !min-w-[auto] !p-0"
                     onClick={() => {
                         setConfig({ mainCharacters: [...mainCharacters, ""] });
-                    }}></Button>
+                    }}
+                    placeholder={undefined}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}></Button>
             </div>
         </div>
     );
