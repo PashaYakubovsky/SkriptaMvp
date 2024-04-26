@@ -1,6 +1,6 @@
 "use client";
 import { IoIosArrowRoundForward } from "react-icons/io";
-import { Button, Page, Text } from "@geist-ui/core";
+import { Button } from "@geist-ui/core";
 import { useRouter } from "next/navigation";
 import Hero from "@/components/threejs/Hero";
 import React from "react";
@@ -8,12 +8,8 @@ import React from "react";
 export default function Home() {
     const router = useRouter();
     return (
-        <div className="flex min-h-screen flex-col items-center flex-start bg-black">
-            <Text className="!w-full !h-[90px] !m-0 text-center shadow-md flex items-center justify-center text-3xl font-bold !bg-black !text-white !relative !z-10">
-                Skripta...
-            </Text>
-
-            <div className="flex flex-col items-center justify-center w-full h-[80vh] px-4">
+        <div className="flex flex-col items-center flex-start bg-black">
+            <div className="flex flex-col items-center justify-center w-full h-screen px-4">
                 <Hero />
 
                 <Button

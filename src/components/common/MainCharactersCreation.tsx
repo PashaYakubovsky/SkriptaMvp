@@ -1,6 +1,6 @@
 "use client";
 import { useQuestionary } from "@/store/useQuestionary";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { Input, Text, Button } from "@geist-ui/core";
 
 export const MainCharactersCreation = () => {
@@ -19,7 +19,7 @@ export const MainCharactersCreation = () => {
                     return (
                         <div key={index} className="flex items-center">
                             <Input
-                                className="!w-[20rem]"
+                                className="!w-[20rem] max-sm:!w-[80vw]"
                                 type="secondary"
                                 placeholder={
                                     [
@@ -40,14 +40,14 @@ export const MainCharactersCreation = () => {
                                 onPointerEnterCapture={undefined}
                                 onPointerLeaveCapture={undefined}
                             />
-                            <AiOutlinePlus
+                            <AiOutlineDelete
                                 onClick={() => {
                                     const newMainCharacters = mainCharacters.filter(
                                         (_, i) => i !== index
                                     );
                                     setConfig({ mainCharacters: newMainCharacters });
                                 }}
-                                className="text-black w-[1.5rem] h-[1.5rem] rotate-45 cursor-pointer"
+                                className="text-red-500 w-[1.5rem] h-[1.5rem] cursor-pointer hover:scale-110 transition-all"
                             />
                         </div>
                     );

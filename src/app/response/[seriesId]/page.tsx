@@ -1,11 +1,13 @@
 "use client";
 import { ISeries } from "@/models/Series";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Text, Button, Card, Page } from "@geist-ui/core";
+import { Text, Button, Card } from "@geist-ui/core";
 import { Courier_Prime } from "next/font/google";
+import { useRouter } from "next/navigation";
+import { richTextFromMarkdown } from "@contentful/rich-text-from-markdown";
+import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 
 const font = Courier_Prime({
     weight: ["400", "700"],
@@ -19,8 +21,8 @@ const createNewEpisode = async ({
     history: { role: string; content: string }[];
     seriesId: string;
 }) => {
-    history.push({ role: "user", content: "Create new episode" });
-    const response = await axios.post(`/api/series/${seriesId}`, { history });
+    const h = [...history, { role: "user", content: "Create new episode" }];
+    const response = await axios.post(`/api/series/${seriesId}`, { history: h });
     return response.data;
 };
 
@@ -39,11 +41,15 @@ export default async function Generate(props: { params: { seriesId: string } }) 
             });
 
             try {
-                const response = await axios.get(`/api/series/${props.params.seriesId}`);
+                const seriesId = window.location.pathname.split("/").pop() ?? props.params.seriesId;
+                const userId = localStorage.getItem("userId");
+                const response = await axios.get(`/api/series/${seriesId}?userId=${userId}`);
                 const responseJson = response.data;
 
-                // replace slug in url with new series id
-                router.replace(`/response/${responseJson.data.id}`);
+                if (responseJson.new) {
+                    router.push(`/response/${responseJson.data.id}`);
+                    return;
+                }
 
                 let history = responseJson.data.history as { role: string; content: string }[];
                 if (typeof history === "string") {
@@ -68,16 +74,18 @@ export default async function Generate(props: { params: { seriesId: string } }) 
             }
         };
         init();
-    }, [props.params.seriesId]);
+    }, []);
 
     const handleCreateNewEpisode = async () => {
         setConfig(state => {
             return { ...state, loading: true };
         });
         try {
+            const seriesId = window.location.pathname.split("/").pop() ?? props.params.seriesId;
+            console.log("create new episode", seriesId);
             const response = (await createNewEpisode({
                 history,
-                seriesId: props.params.seriesId,
+                seriesId,
             })) as {
                 series: ISeries & { history: { role: string; content: string }[]; id: string };
             };
@@ -91,6 +99,7 @@ export default async function Generate(props: { params: { seriesId: string } }) 
             setConfig(state => {
                 return { ...state, history: h, loading: false };
             });
+            toast.success("New episode created");
         } catch (error) {
             console.error(error);
             setConfig(state => {
@@ -103,18 +112,24 @@ export default async function Generate(props: { params: { seriesId: string } }) 
         <main className="flex min-h-screen flex-col items-start flex-start mb-[2rem] gap-5">
             <header
                 id="header"
-                className="h-[90px] bg-[#000] text-lg pt-[3rem] w-full  text-white relative">
+                className="h-[90px] bg-[#000] text-lg pt-[3rem] w-full text-center text-white relative">
                 <Text h2 className="relative z-10 px-4">
                     Here you go...
                 </Text>
             </header>
 
             <div className="flex flex-col gap-5 px-4 xl:max-w-[1200px] m-auto">
-                {history.map((item, index) => {
+                {history.map(async (item, index) => {
+                    const doc = await richTextFromMarkdown(item.content);
+                    const html = documentToHtmlString(doc);
                     return (
-                        <Card key={index} className={`p-4 relative z-10 my-2 ${font.className}`}>
-                            <h3 className="font-bold">episode {index + 1}</h3>
-                            <p className="text-lg">{item.content}</p>
+                        <Card key={index} className={`p-4 relative z-10 my-2`}>
+                            <h3 className={`font-bold`}>episode {index + 1}</h3>
+                            <p
+                                className={`text-lg ${font.className}`}
+                                dangerouslySetInnerHTML={{
+                                    __html: html,
+                                }}></p>
                         </Card>
                     );
                 })}

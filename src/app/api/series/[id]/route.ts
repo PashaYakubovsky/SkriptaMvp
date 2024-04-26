@@ -1,5 +1,5 @@
 import { openai } from "@/lib/openai";
-import Series, { ISeries } from "@/models/Series";
+import Series from "@/models/Series";
 import connectMongo from "@/utils/connectMongo";
 import { HttpStatusCode } from "axios";
 import { parseFilmScript } from "@/utils/parseFilmScript";
@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
         await connectMongo();
         const body = await req.json();
         const id = req.url.split("/").pop();
-        debugger;
 
         if (!id) {
             return NextResponse.json(
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
         }
 
         const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4",
             messages: series.history,
         });
 
@@ -78,7 +77,7 @@ export async function DELETE(req: NextRequest) {
     }
 }
 
-const getAiResponse = async (seriesId: string) => {
+const getAiResponse = async (seriesId: string, userId: string) => {
     let prompt = "";
     let series = null;
     try {
@@ -91,7 +90,7 @@ const getAiResponse = async (seriesId: string) => {
         }
 
         if (!series || series.length === 0) {
-            const filmScript = await FilmScript.findOne({ userId: "xwxoyk" });
+            const filmScript = await FilmScript.findOne({ userId });
 
             prompt = parseFilmScript({ filmScript });
 
@@ -110,22 +109,30 @@ const getAiResponse = async (seriesId: string) => {
                         2. Middle Scenes (1 minute 30 seconds)
                         3. Climax (30 seconds)
                         4. Ending (30 seconds)
+                        Always return new episode synopsis on each request without additional questioning the user.
+                        Return rich text field type response.
                     `,
                 },
                 {
-                    role: "system",
+                    role: "user",
                     content: prompt,
+                },
+                {
+                    role: "user",
+                    content:
+                        "Write episode 1 while understanding that the series should feature one overarching story with mini-arcs throughout. Each episode should end on a minor or major cliffhanger to keep viewers coming back.",
                 },
             ];
 
             const newSeries = await Series.create({
-                userId: "xwxoyk",
+                userId,
                 filmScriptId: filmScript.id,
                 history: initialMessages,
             });
 
             return {
                 success: true,
+                new: true,
                 data: newSeries,
             };
         } else {
@@ -145,14 +152,19 @@ const getAiResponse = async (seriesId: string) => {
 };
 
 export async function GET(req: NextRequest) {
-    const seriesId = req.url.split("/").pop() as string;
+    let seriesId = req.url.split("/").pop() ?? "";
+    seriesId = seriesId.split("?")[0];
+    const queryParams = new URLSearchParams(req.url.split("?")[1]);
+    const userId = queryParams.get("userId");
+
+    if (!userId) return NextResponse.json({ error: "userId is required" });
 
     try {
         await connectMongo();
-        const aiResponse = await getAiResponse(seriesId);
+        const aiResponse = await getAiResponse(seriesId, userId);
         const series = aiResponse.data;
 
-        return NextResponse.json({ data: series });
+        return NextResponse.json({ data: series, new: aiResponse.new });
     } catch (error) {
         return NextResponse.json({ error });
     }

@@ -1,80 +1,10 @@
+import styles from "./Hero.module.scss";
 import React, { useRef, useMemo, memo, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrthographicCamera } from "@react-three/drei";
-
-const fragmentShader = `
-    varying vec3 vColor;
-    uniform vec3 uColor;
-
-    void main()
-    {
-        vec2 uv = gl_PointCoord;
-        float distanceToCenter = length(uv - vec2(0.5));
-
-        if(distanceToCenter > 0.5)
-            discard;
-
-        gl_FragColor = vec4(vColor, 1.0);
-        #include <tonemapping_fragment>
-    }
-`;
-
-const vertexShader = `
-    uniform vec2 uResolution;
-    uniform sampler2D uPictureTexture;
-    uniform sampler2D uDisplacementTexture;
-    uniform float uSize;
-    uniform float uTime;
-    uniform float uAngleScale;
-    uniform float uDisplacementScale;
-    uniform float uDisplacementSpeed;
-    uniform bool uRandomScale;
-
-    attribute float aIntensity;
-    attribute float aAngle;
-    attribute float aScale;
-
-    varying vec3 vColor;
-    void main() {
-        // Displacement
-        vec3 newPosition = position;
-        vec2 newUv = uv;
-        newUv.y = 1.0 - newUv.y;
-        newUv.x = 1.0 - newUv.x;
-        float displacementIntensity = texture(uDisplacementTexture, newUv).r;
-        displacementIntensity = smoothstep(0.1, uDisplacementSpeed, displacementIntensity);
-
-        vec3 displacement = vec3(
-            cos(aAngle) * uAngleScale,
-            sin(aAngle) * uAngleScale,
-            1.0
-        );
-        displacement = normalize(displacement);
-        displacement *= displacementIntensity;
-        displacement *= uDisplacementScale;
-        displacement *= aIntensity;
-        
-        newPosition += displacement;
-
-
-        // Final position
-        vec4 modelPosition = modelMatrix * vec4(newPosition, 1.0);
-        vec4 viewPosition = viewMatrix * modelPosition;
-        vec4 projectedPosition = projectionMatrix * viewPosition;
-        gl_Position = projectedPosition;
-
-        // Point size
-        float pz = 0.2 * uResolution.y * uSize * (1.0 / - viewPosition.z);
-        if(uRandomScale) {
-            pz *= aScale;
-        }
-        gl_PointSize = pz;
-
-        // Varyings
-        vColor = vec3(pow(displacementIntensity, 2.0));
-    }
-`;
+import fragmentShader from "./fragmentShader.glsl";
+import vertexShader from "./vertexShader.glsl";
 
 const ParticlesShader = memo(() => {
     const renderRef =
@@ -299,6 +229,22 @@ const ParticlesShader = memo(() => {
         <>
             <group>
                 <mesh
+                    onClick={() => {
+                        // create waves in canvas 2d and pass it to the shader
+                        const context = displacement.current.context;
+                        if (!context) return;
+                        // Draw glow
+                        const glowSize = displacement.current.canvas!.width * 0.4;
+                        context.globalCompositeOperation = "lighten";
+                        context.globalAlpha = 1;
+                        context.drawImage(
+                            displacement.current.glowImage!,
+                            displacement.current.canvasCursor!.x - glowSize * 0.5,
+                            displacement.current.canvasCursor!.y - glowSize * 0.5,
+                            glowSize,
+                            glowSize
+                        );
+                    }}
                     ref={planeRef}
                     onPointerMove={e => {
                         // update the mouse position
@@ -355,7 +301,7 @@ const ParticlesShader = memo(() => {
 
 const Hero = () => {
     return (
-        <Canvas className="!absolute !w-full !h-full ">
+        <Canvas className={styles.hero}>
             <ambientLight intensity={Math.PI / 2} />
             <spotLight
                 position={[10, 10, 10]}

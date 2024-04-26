@@ -1,7 +1,7 @@
 "use client";
 import { IoEyeOutline } from "react-icons/io5";
 import { IoEyeOffOutline } from "react-icons/io5";
-import { Page, Text, Input, Button, Link } from "@geist-ui/core";
+import { Text, Input, Button, Link } from "@geist-ui/core";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -18,17 +18,17 @@ export default function Login() {
                 Skripta...
             </Text>
 
-            <div className="flex flex-col items-center justify-center w-full h-[80vh] max-w-[600px] m-auto">
-                <Text h2 className="text-4xl !text-white">
+            <div className="flex flex-col items-center justify-center w-full h-[80vh] max-w-[600px] m-auto max-md:max-w-[80vw]">
+                <Text h2 className="text-4xl !text-white text-center relative z-10">
                     Welcome Back
                 </Text>
-                <Text p className="!mb-4 !mt-0 text-sm !text-white">
+                <Text p className="!mb-4 !mt-0 text-sm !text-white text-center relative z-10">
                     Let's get started by filling out the form below.
                 </Text>
 
                 <Hero />
 
-                <div className="w-full gap-2 mb-2 flex flex-col bg-black relative z-10">
+                <div className="w-full gap-2 mb-4 flex flex-col bg-black relative z-10 ">
                     <Input
                         ref={node => {
                             if (node) {
@@ -58,15 +58,16 @@ export default function Login() {
                             onPointerLeaveCapture={undefined}
                             crossOrigin={undefined}
                         />
-                        <button onClick={() => setConfig({ showPassword: !config.showPassword })}>
+                        <button
+                            onClick={() => setConfig({ showPassword: !config.showPassword })}
+                            className="text-white">
                             {config.showPassword ? (
-                                <IoEyeOutline className="absolute right-2 top-[50%] translate-y-[-50%] cursor-pointer w-[1.5rem] h-[1.5rem] text-[#000]" />
+                                <IoEyeOutline className="absolute right-2 top-[50%] translate-y-[-50%] cursor-pointer w-[1.5rem] h-[1.5rem]" />
                             ) : (
-                                <IoEyeOffOutline className="absolute right-2 top-[50%] translate-y-[-50%] cursor-pointer w-[1.5rem] h-[1.5rem] text-[#000]" />
+                                <IoEyeOffOutline className="absolute right-2 top-[50%] translate-y-[-50%] cursor-pointer w-[1.5rem] h-[1.5rem]" />
                             )}
                         </button>
                     </div>
-                    {/* <Input type="password" svg={IoEyeOutline} placeholder="Password" /> */}
                 </div>
 
                 {/* CTA */}

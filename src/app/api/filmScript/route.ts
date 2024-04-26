@@ -3,12 +3,19 @@ import { HttpStatusCode } from "axios";
 import FilmScript from "@/models/FilmScript";
 import { NextRequest, NextResponse } from "next/server";
 
-const userId = "xwxoyk";
-
 export async function POST(req: NextRequest) {
     try {
-        await connectMongo();
         const body = await req.json();
+        const userId = body.userId;
+
+        if (!userId) {
+            return NextResponse.json(
+                { message: "userId is required" },
+                { status: HttpStatusCode.BadRequest }
+            );
+        }
+
+        await connectMongo();
 
         const existingFilmScript = await FilmScript.findOne({ userId });
         if (existingFilmScript) {
@@ -32,6 +39,9 @@ export async function POST(req: NextRequest) {
     }
 }
 export async function GET(req: NextRequest) {
+    const queryParams = new URLSearchParams(req.url.split("?")[1]);
+    const userId = queryParams.get("userId");
+
     if (!userId) {
         return NextResponse.json(
             { message: "userId is required" },

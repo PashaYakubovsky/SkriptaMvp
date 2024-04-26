@@ -1,14 +1,12 @@
 "use client";
-// import Input from "@/components/common/Input";
 import { useQuestionary } from "@/store/useQuestionary";
 import { useEffect, useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineDelete } from "react-icons/ai";
 import { createFilmScript } from "../actions";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { RotatingLines } from "react-loader-spinner";
 import axios from "axios";
-import { Input, Text, Page, Tag, Button, Textarea, Loading } from "@geist-ui/core";
+import { Input, Text, Tag, Button, Textarea } from "@geist-ui/core";
 import { MainCharactersCreation } from "../../components/common/MainCharactersCreation";
 
 export default function AIConfig() {
@@ -35,19 +33,24 @@ export default function AIConfig() {
 
     useEffect(() => {
         const init = async () => {
-            const res = await axios.get("/api/filmScript");
-            const filmScript = res.data.data[0];
-            if (filmScript) setConfig(filmScript);
+            const userId = localStorage.getItem("userId");
+            try {
+                const res = await axios.get("/api/filmScript?userId=" + userId);
+                const filmScript = res.data.data[0];
+                if (filmScript) setConfig(filmScript);
+            } catch (err) {
+                toast.error((err as Error)?.message);
+            }
         };
         init();
     }, []);
 
     return (
-        <>
+        <div className="bg-stone-100">
             <Text h2 className="!w-full border-b-2 border-black text-center">
                 Vertical Film Script Generator
             </Text>
-            <Text className="font-semibold text-sm text-center">
+            <Text className="font-semibold text-sm text-center max-w-[80vw] m-auto">
                 Please answer the following questions to the best of your ability
             </Text>
             <div className="flex min-h-screen flex-col items-center justify-between pb-[2rem] px-4 w-fit m-auto">
@@ -60,6 +63,7 @@ export default function AIConfig() {
                             clearable
                             type="secondary"
                             htmlType="text"
+                            className="max-sm:!w-full"
                             placeholder="eg. 100"
                             value={episodes + ""}
                             onChange={e => {
@@ -76,6 +80,7 @@ export default function AIConfig() {
                             How Long Should Each Episode Be? (in minutes)
                         </Text>
                         <Input
+                            className="max-sm:!w-full"
                             clearable
                             type="secondary"
                             placeholder="eg. 3"
@@ -143,7 +148,7 @@ export default function AIConfig() {
                                 className="cursor-pointer"
                                 type={budget === "medium" ? "success" : "default"}
                                 onClick={() => {
-                                    setConfig({ budget: "nedium" });
+                                    setConfig({ budget: "medium" });
                                 }}>
                                 Medium
                             </Tag>
@@ -163,6 +168,7 @@ export default function AIConfig() {
                             What Is The Primary Story Location?
                         </Text>
                         <Input
+                            className="max-sm:!w-full"
                             type="secondary"
                             placeholder="eg. New York City"
                             value={primaryStoryLocation}
@@ -180,6 +186,7 @@ export default function AIConfig() {
                             Number Of Main Characters (optional)
                         </Text>
                         <Input
+                            className="max-sm:!w-full"
                             clearable
                             type="secondary"
                             inputMode="numeric"
@@ -263,9 +270,9 @@ export default function AIConfig() {
 
                         {emotionalEvents.map((emEv, index) => {
                             return (
-                                <div key={index} className="flex items-center">
+                                <div key={index} className="flex items-center w-full">
                                     <Input
-                                        className="!w-[20rem]"
+                                        className="!w-[20rem] max-sm:!w-[80vw]"
                                         type="secondary"
                                         placeholder={
                                             ["eg. Discovery of creature", "eg. Murder of captain"][
@@ -282,7 +289,7 @@ export default function AIConfig() {
                                         onPointerEnterCapture={undefined}
                                         onPointerLeaveCapture={undefined}
                                     />
-                                    <AiOutlinePlus
+                                    <AiOutlineDelete
                                         onClick={() => {
                                             const newEmotionalEvents = emotionalEvents.filter(
                                                 (v, _index) => _index !== index
@@ -291,7 +298,7 @@ export default function AIConfig() {
                                                 emotionalEvents: newEmotionalEvents,
                                             });
                                         }}
-                                        className="text-black w-[1.5rem] h-[1.5rem] rotate-45 cursor-pointer"
+                                        className="w-[1.5rem] h-[1.5rem] text-red-500 cursor-pointer hover:scale-110 transition-all"
                                     />
                                 </div>
                             );
@@ -316,7 +323,7 @@ export default function AIConfig() {
                         <span>Separate locations with 'and'</span>
                         <Textarea
                             resize="both"
-                            className="!w-[20rem]"
+                            className="!w-[20rem] max-sm:!w-full"
                             value={desiredPrimaryFilmingLocations}
                             onChange={e => {
                                 setConfig({ desiredPrimaryFilmingLocations: e.target.value });
@@ -333,6 +340,7 @@ export default function AIConfig() {
                             Emotional Add A Story Reference From A Film Or Novel (optional){" "}
                         </Text>
                         <Textarea
+                            className="max-sm:!w-full"
                             value={storyReference}
                             onChange={e => {
                                 setConfig({ storyReference: e.target.value });
@@ -364,6 +372,7 @@ export default function AIConfig() {
                         </Text>
                         <Text h5>Separate locations with a comma ','</Text>
                         <Textarea
+                            className="max-sm:!w-full"
                             value={additionalElements}
                             onChange={e => {
                                 setConfig({ additionalElements: e.target.value });
@@ -377,10 +386,11 @@ export default function AIConfig() {
 
                     <Button
                         loading={loading}
+                        className="!w-fit"
                         disabled={loading}
                         type="secondary-light"
                         onClick={async () => {
-                            const userId = "xwxoyk";
+                            const userId = localStorage.getItem("userId");
                             if (!userId) {
                                 toast.error("userId not found");
                                 return;
@@ -419,6 +429,6 @@ export default function AIConfig() {
                     </Button>
                 </div>
             </div>
-        </>
+        </div>
     );
 }

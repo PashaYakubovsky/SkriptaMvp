@@ -6,14 +6,19 @@ import { useRouter } from "next/navigation";
 export default function Home() {
     const router = useRouter();
     return (
-        <main className="flex min-h-screen flex-col items-start flex-start px-4">
+        <main className="flex min-h-screen flex-col items-start flex-start px-4 bg-black">
             <Text
                 h2
-                className="border-b-2 border-black !w-full !h-[4rem] !flex inter-center
+                className="
+                border-b-2 border-white 
+                !w-full !py-[2rem]
+                !text-white 
+                !flex inter-center
                 justify-center 
                 align-center
                 align-middle
                 text-center
+                max-md:text-3xl
             ">
                 What Do You Want To Do?
             </Text>
@@ -24,11 +29,12 @@ export default function Home() {
                     }}
                     hoverable
                     className="
+                      !bg-slate-600
                         !w-[14rem] !h-[12rem] shadow-md rounded-md
                         hover:shadow-xl hover:scale-105
                         cursor-pointer active:scale-95 
                         transform transition duration-300 ease-in-out">
-                    <div className="h-[70%] bg-[#39D2C0] p-2 flex flex-col justify-between text-white text-sm	">
+                    <div className="h-[70%] rounded-sm bg-[#39D2C0] p-2 flex flex-col justify-between text-white text-sm	">
                         <div className="relative w-fit rounded-md overflow-hidden p-2">
                             <div className="absolute w-full h-full left-0 top-0 bg-white opacity-25"></div>
                             <RiComputerLine className="w-[1.5rem] h-[1.5rem] text-white" />
@@ -41,6 +47,7 @@ export default function Home() {
                     </div>
                     <Text
                         className="h-[30%] flex 
+                        !text-white
                     items-center justify-center text-2xl
                     ">
                         Begin
