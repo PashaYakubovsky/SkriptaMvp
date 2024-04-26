@@ -337,7 +337,7 @@ export default function AIConfig() {
 
                     <div className="flex flex-col gap-2">
                         <Text h4 className="text-lg font-semibold">
-                            Emotional Add A Story Reference From A Film Or Novel (optional){" "}
+                            Add A Story Reference From A Film Or Novel (optional){" "}
                         </Text>
                         <Textarea
                             className="max-sm:!w-full"
