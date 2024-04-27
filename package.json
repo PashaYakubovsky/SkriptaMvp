@@ -24,6 +24,7 @@
     "gsap": "^3.12.5",
     "mongoose": "^8.3.2",
     "next": "14.2.2",
+    "next-auth": "^4.24.7",
     "openai": "^4.38.3",
     "postprocessing": "^6.35.3",
     "raw-loader": "^4.0.2",
