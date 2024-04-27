@@ -77,6 +77,30 @@ export async function DELETE(req: NextRequest) {
     }
 }
 
+export async function PUT(req: NextRequest) {
+    try {
+        await connectMongo();
+        const body = await req.json();
+        const id = req.url.split("/").pop();
+
+        if (!id) {
+            return NextResponse.json(
+                { message: "id is required" },
+                { status: HttpStatusCode.BadRequest }
+            );
+        }
+
+        const series = await Series.findByIdAndUpdate(id, body, { new: true });
+
+        return NextResponse.json(
+            { series, message: "Your Series updated" },
+            { status: HttpStatusCode.Created }
+        );
+    } catch (error) {
+        return NextResponse.json({ message: error }, { status: HttpStatusCode.BadRequest });
+    }
+}
+
 const getAiResponse = async (seriesId: string, userId: string) => {
     let prompt = "";
     let series = null;
@@ -99,16 +123,16 @@ const getAiResponse = async (seriesId: string, userId: string) => {
             const initialMessages: ChatCompletionMessageParam[] = [
                 {
                     role: "system",
-                    content: "You are a film scenario creation AI assistant.",
+                    content: "You are a film script creation AI assistant.",
                 },
                 {
                     role: "system",
                     content: `
                         Output Format:
-                        1. Opening Scene (30 seconds)
-                        2. Middle Scenes (1 minute 30 seconds)
-                        3. Climax (30 seconds)
-                        4. Ending (30 seconds)
+                        1. Opening Scene (15% of episode time given by user write actual time in minutes)
+                        2. Middle Scenes (50% of episode time given by user write actual time in minutes)
+                        3. Climax (15% of episode time given by user write actual time in minutes)
+                        4. Ending (15% of episode time given by user write actual time in minutes)
                         Always return new episode synopsis on each request without additional questioning the user.
                         Return rich text field type response.
                     `,

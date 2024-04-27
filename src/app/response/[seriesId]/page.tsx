@@ -10,23 +10,12 @@ import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
 import { richTextFromMarkdown } from "@contentful/rich-text-from-markdown";
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { createNewEpisode } from "@/lib/api";
 
 const font = Courier_Prime({
     weight: ["400", "700"],
     subsets: ["latin"],
 });
-
-const createNewEpisode = async ({
-    history,
-    seriesId,
-}: {
-    history: { role: string; content: string }[];
-    seriesId: string;
-}) => {
-    const h = [...history, { role: "user", content: "Create new episode" }];
-    const response = await axios.post(`/api/series/${seriesId}`, { history: h });
-    return response.data;
-};
 
 export default async function Generate() {
     const router = useRouter();
@@ -52,7 +41,8 @@ export default async function Generate() {
 
                 if (responseJson.new) {
                     // replace slug without reloading the page
-                    router.replace(`/response/${responseJson.data.id}`);
+                    router.replace(`/response?seriesId=${responseJson.data.id}`);
+                    return;
                 }
 
                 let history = responseJson.data.history as { role: string; content: string }[];

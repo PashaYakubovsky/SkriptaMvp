@@ -53,8 +53,8 @@ const ParticlesShader = memo(() => {
 
     const heroGeometry = useMemo(() => {
         const geometry = new THREE.BufferGeometry();
-        const count = 2000;
-        const gap = 0.8; // Gap between particles
+        const count = 5000;
+        const gap = 0.5; // Gap between particles
         const aspectRatio = window.innerWidth / window.innerHeight; // User window screen aspect ratio
         const rows = Math.floor(Math.sqrt(count / aspectRatio)); // Number of rows in the grid
         const cols = Math.ceil(count / rows); // Number of columns in the grid
@@ -127,7 +127,7 @@ const ParticlesShader = memo(() => {
 
         // Draw glow
         if (displacement.current.context && displacement.current.canvasCursor) {
-            const glowSize = displacement.current.canvas!.width * 0.4;
+            const glowSize = displacement.current.canvas!.width * 0.2;
             displacement.current.context.globalCompositeOperation = "lighten";
             displacement.current.context.globalAlpha = alpha;
             displacement.current.context.drawImage(

@@ -9,9 +9,9 @@ export default function Home() {
     const router = useRouter();
     return (
         <div className="flex flex-col items-center flex-start bg-black">
-            <div className="flex flex-col items-center justify-center w-full h-screen px-4">
-                <Hero />
+            <Hero />
 
+            <div className="flex flex-col items-center justify-center w-full h-screen px-4">
                 <Button
                     onClick={() => {
                         router.push("/login");

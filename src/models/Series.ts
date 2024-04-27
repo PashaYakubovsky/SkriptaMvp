@@ -4,6 +4,10 @@ export interface ISeries {
     userId: string;
     filmScriptId: string;
     history: JSON;
+    id: string;
+    name?: string;
+    createdAt: string;
+    updatedAt: string;
 }
 const SeriesSchema = new Schema<ISeries>(
     {
@@ -19,6 +23,10 @@ const SeriesSchema = new Schema<ISeries>(
         history: {
             type: JSON,
             required: true,
+        },
+        name: {
+            type: String,
+            required: false,
         },
     },
     {

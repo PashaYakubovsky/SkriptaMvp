@@ -50,27 +50,30 @@ export default PageWrapper;
 
 const Preloader = () => {
     const ref = React.useRef<HTMLDivElement>(null);
+    const [show, setShow] = React.useState(true);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
             const tl = gsap.timeline();
             tl.to(ref.current, {
-                duration: 1.5,
+                duration: 3,
                 opacity: 0,
                 delay: 1,
                 onComplete: () => {
-                    ref.current?.remove();
+                    setShow(false);
                 },
             });
         });
         return () => ctx.revert();
     }, []);
 
+    if (!show) return null;
+
     return (
         <div
             ref={ref}
-            className={`w-full h-full fixed text-center flex items-center justify-center text-8xl font-bold bg-black text-whit z-20 text-white max-md:text-5xl ${cpFont.className}`}>
-            Skripta
+            className={`w-screen h-screen left-0 top-0 absolute text-center bg-black flex items-center justify-center text-8xl font-bold text-whit z-[100] text-white max-md:text-5xl ${cpFont.className}`}>
+            <span className="z-300 [text-shadow:0_0_10px_white]">Skripta</span>
         </div>
     );
 };
