@@ -16,11 +16,14 @@ const font = Courier_Prime({
     subsets: ["latin"],
 });
 
+type aiResponse = { role: string; content: string }[];
+
 export default function ResponsePage() {
     const router = useRouter();
-    const [{ history, loading }, setConfig] = useState({
-        history: [] as { role: string; content: string }[],
+    const [{ history, loading, _history }, setConfig] = useState({
+        history: [] as aiResponse,
         loading: false,
+        _history: [] as aiResponse,
     });
     const params = useSearchParams();
 
@@ -37,16 +40,24 @@ export default function ResponsePage() {
                 const userId = localStorage.getItem("userId");
                 const response = await axios.get(`/api/series/${seriesId}?userId=${userId}`);
                 const responseJson = response.data;
+                let history = responseJson.data.history as { role: string; content: string }[];
 
                 if (responseJson.new) {
                     // replace query param
                     router.replace(`/response?seriesId=${responseJson.data.id}`);
+                    const res = await createNewEpisode({
+                        history,
+                        seriesId: responseJson.data.id,
+                        message: {
+                            role: "system",
+                            content: "Create synopsis for whole series with specific details.",
+                        },
+                    });
+
+                    history = res.series.history;
                 }
 
-                let history = responseJson.data.history as { role: string; content: string }[];
-                if (typeof history === "string") {
-                    history = JSON.parse(history);
-                }
+                let _history = history;
 
                 const h = history.filter(
                     message =>
@@ -54,7 +65,7 @@ export default function ResponsePage() {
                         message.role !== "system" &&
                         message.content !== "You are a film scenario creation AI assistant."
                 );
-                setConfig({ history: h, loading: false });
+                setConfig(state => ({ ...state, history: h, _history, loading: false }));
             } catch (err) {
                 setConfig(state => {
                     return {
@@ -77,7 +88,7 @@ export default function ResponsePage() {
             const seriesId = params?.get("seriesId") ?? "";
             console.log("create new episode", seriesId);
             const response = (await createNewEpisode({
-                history,
+                history: _history,
                 seriesId: seriesId,
             })) as {
                 series: ISeries & { history: { role: string; content: string }[]; id: string };
@@ -90,7 +101,7 @@ export default function ResponsePage() {
                     message.content !== "You are a film scenario creation AI assistant."
             );
             setConfig(state => {
-                return { ...state, history: h, loading: false };
+                return { ...state, history: h, _history: response.series.history, loading: false };
             });
             toast.success("New episode created");
         } catch (error) {
@@ -117,7 +128,11 @@ export default function ResponsePage() {
                     const html = documentToHtmlString(doc);
                     return (
                         <Card key={index} className={`p-4 relative z-10 my-2`}>
-                            <h3 className={`font-bold`}>episode {index + 1}</h3>
+                            {index === 0 ? (
+                                <h3 className={`font-bold`}>Synopsys</h3>
+                            ) : (
+                                <h3 className={`font-bold`}>Episode {index}</h3>
+                            )}
                             <p
                                 className={`text-lg ${font.className} ${styles.episode}`}
                                 dangerouslySetInnerHTML={{

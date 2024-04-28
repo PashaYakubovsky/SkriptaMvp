@@ -6,6 +6,7 @@ export interface IFilmScript {
     episodes: number;
     episodeLength: number;
     genre: string;
+    subGenre: string;
     budget: string;
     primaryStoryLocation: string;
     mainCharactersLength?: number;
@@ -29,6 +30,7 @@ const FilmScriptSchema = new Schema<IFilmScript>(
         episodeLength: Number,
         episodes: Number,
         genre: String,
+        subGenre: String,
         language: String,
         mainCharacters: [String],
         mainCharactersLength: Number,

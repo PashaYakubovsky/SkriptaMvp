@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Text } from "@geist-ui/core";
+import { Text, Input } from "@geist-ui/core";
 import { ISeries } from "@/models/Series";
 import { VirtuosoGrid } from "react-virtuoso";
 import toast from "react-hot-toast";
@@ -18,12 +18,16 @@ const ItemWrapper = dynamic(() => import("@/components/pages/response/list/ItemW
 const SeriesList = () => {
     const [config, setConfig] = useState<{
         series: ISeries[];
+        filteredSeries: ISeries[];
         popupOpen: boolean;
         selectedScript: ISeries | null;
         loading: boolean;
+        popupType: "edit" | "delete";
     }>({
         series: [],
+        filteredSeries: [],
         popupOpen: false,
+        popupType: "edit",
         selectedScript: null,
         loading: false,
     });
@@ -35,7 +39,7 @@ const SeriesList = () => {
             try {
                 setConfig({ ...config, loading: true });
                 const series = await getSeries({ userId });
-                setConfig({ ...config, series, loading: false });
+                setConfig({ ...config, series, loading: false, filteredSeries: series });
             } catch (error) {
                 toast.error("Failed to fetch series");
                 setConfig({ ...config, loading: false });
@@ -53,22 +57,53 @@ const SeriesList = () => {
             <header className="text-center text-white bg-black py-5">
                 <Text h2>Series</Text>
             </header>
+            <div className="w-[15rem] mt-4 mx-auto">
+                <Input
+                    onChange={e => {
+                        const value = e.target.value.toLowerCase();
+                        setConfig({
+                            ...config,
+                            filteredSeries: config.series.filter(script => {
+                                const pattern = new RegExp(value, "i");
+                                return (
+                                    pattern.test(script?.name || "") ||
+                                    pattern.test(script?.id || "")
+                                );
+                            }),
+                        });
+                    }}
+                    placeholder="Search"
+                    width="100%"
+                    crossOrigin={undefined}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                />
+            </div>
 
             <div className="py-5">
                 <VirtuosoGrid
-                    style={{ height: 700, margin: "0 auto" }}
-                    totalCount={config.series.length}
+                    style={{ height: 700, display: "flex" }}
+                    totalCount={config.filteredSeries.length}
                     components={gridComponents as any}
                     itemContent={index => {
-                        const script = config.series[index];
+                        const script = config.filteredSeries[index];
                         return (
                             <ItemWrapper
+                                onDelete={() => {
+                                    setConfig({
+                                        ...config,
+                                        popupOpen: true,
+                                        popupType: "delete",
+                                        selectedScript: script,
+                                    });
+                                }}
                                 loading={config.loading}
                                 onClick={() => {
                                     setConfig({
                                         ...config,
                                         popupOpen: true,
-                                        selectedScript: config.series[index],
+                                        popupType: "edit",
+                                        selectedScript: script,
                                     });
                                 }}>
                                 {script?.name ?? script?.id}
@@ -83,12 +118,18 @@ const SeriesList = () => {
                 close={() => {
                     setConfig({ ...config, popupOpen: false });
                 }}
+                type={config.popupType}
                 script={config.selectedScript}
                 onUpdate={() => {
                     setConfig({ ...config, loading: true });
                     getSeries({ userId: localStorage.getItem("userId") ?? "" })
                         .then(series => {
-                            setConfig(state => ({ ...state, series, loading: false }));
+                            setConfig(state => ({
+                                ...state,
+                                series,
+                                loading: false,
+                                filteredSeries: series,
+                            }));
                         })
                         .catch(() => {
                             setConfig({ ...config, loading: false });

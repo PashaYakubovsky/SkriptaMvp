@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import { Session } from "next-auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,13 +17,15 @@ const PageWrapper = dynamic(() => import("./pageWrapper"), {
 
 export default function RootLayout({
     children,
+    params: { session, ...params },
 }: Readonly<{
     children: React.ReactNode;
+    params: { session: Session };
 }>) {
     return (
         <html lang="en">
             <body className={inter.className}>
-                <PageWrapper>{children}</PageWrapper>
+                <PageWrapper session={session}>{children}</PageWrapper>
             </body>
         </html>
     );

@@ -3,11 +3,13 @@ import axios from "axios";
 export const createNewEpisode = async ({
     history,
     seriesId,
+    message,
 }: {
     history: { role: string; content: string }[];
     seriesId: string;
+    message?: { role: string; content: string };
 }) => {
-    const h = [...history, { role: "user", content: "Create new episode" }];
+    const h = [...history, message ?? { role: "user", content: "Create new episode" }];
     const response = await axios.post(`/api/series/${seriesId}`, { history: h });
     return response.data;
 };

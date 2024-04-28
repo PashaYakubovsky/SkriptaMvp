@@ -15,7 +15,9 @@ export default function AIConfig() {
     const config = useQuestionary();
     const {
         setConfig,
+        setError,
         episodeLength,
+        subGenre,
         episodes,
         genre,
         budget,
@@ -29,6 +31,7 @@ export default function AIConfig() {
         mainCharacters,
         mainCharactersLength,
         storyReference,
+        errors,
     } = config;
 
     useEffect(() => {
@@ -44,6 +47,73 @@ export default function AIConfig() {
         };
         init();
     }, []);
+
+    const isValid = () => {
+        let valid = true;
+        if (!episodes) {
+            setError("Episodes is required", "episodes");
+            valid = false;
+        }
+        if (!episodeLength) {
+            setError("Episode length is required", "episodesLength");
+            valid = false;
+        }
+        if (!genre) {
+            setError("Genre is required", "genre");
+            valid = false;
+        }
+        if (!budget) {
+            setError("Budget is required", "budget");
+            valid = false;
+        }
+        if (!primaryStoryLocation) {
+            setError("Primary story location is required", "primaryStoryLocation");
+            valid = false;
+        }
+        return valid;
+    };
+
+    const handleSubmit = async () => {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            toast.error("userId not found");
+            return;
+        }
+        const valid = isValid();
+        if (!valid) {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
+            return;
+        }
+        setLoading(true);
+        try {
+            await createFilmScript({
+                episodeLength,
+                episodes,
+                genre,
+                budget,
+                primaryStoryLocation,
+                additionalElements,
+                desiredPrimaryFilmingLocation,
+                desiredPrimaryFilmingLocations,
+                emotionalEvents,
+                language,
+                mainCharacterEthnicity,
+                mainCharacters,
+                mainCharactersLength,
+                storyReference,
+                userId,
+            });
+
+            router.push("/response");
+            setLoading(false);
+        } catch (err) {
+            toast.error((err as Error)?.message);
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="bg-stone-100">
@@ -61,18 +131,30 @@ export default function AIConfig() {
                         </Text>
                         <Input
                             clearable
-                            type="secondary"
+                            type={errors.episodes ? "error" : "secondary"}
                             htmlType="text"
                             className="max-sm:!w-full"
                             placeholder="eg. 100"
                             value={episodes + ""}
                             onChange={e => {
-                                setConfig({ episodes: +e.target.value });
+                                const value = +e.target.value;
+                                if (value <= 0 || value >= 100) {
+                                    setError("Max episodes is 100", "episodes");
+                                } else if (errors.episodes) {
+                                    setError("", "episodes");
+                                }
+
+                                setConfig({ episodes: value });
                             }}
                             crossOrigin={undefined}
                             onPointerEnterCapture={undefined}
                             onPointerLeaveCapture={undefined}
                         />
+                        {errors.episodes && (
+                            <Text className="!m-0" type="error">
+                                {errors.episodes}
+                            </Text>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -82,22 +164,36 @@ export default function AIConfig() {
                         <Input
                             className="max-sm:!w-full"
                             clearable
-                            type="secondary"
+                            type={errors.episodesLength ? "error" : "secondary"}
                             placeholder="eg. 3"
                             value={episodeLength + ""}
                             onChange={e => {
-                                setConfig({ episodeLength: +e.target.value });
+                                const value = +e.target.value;
+
+                                if (value < 1 || value > 5) {
+                                    setError("Max length is 5 minutes", "episodesLength");
+                                } else if (errors.episodesLength) {
+                                    setError("", "episodesLength");
+                                }
+
+                                setConfig({ episodeLength: value });
                             }}
                             onPointerEnterCapture={undefined}
                             onPointerLeaveCapture={undefined}
                             crossOrigin={undefined}
                         />
+                        {errors.episodesLength && (
+                            <Text className="!m-0" type="error">
+                                {errors.episodesLength}
+                            </Text>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <Text h4 className="text-lg font-semibold block">
                             Choose A Genre
                         </Text>
+
                         <div className="flex flex-wrap gap-[0.5rem]">
                             {[
                                 "Action",
@@ -105,11 +201,13 @@ export default function AIConfig() {
                                 "Comedy",
                                 "Drama",
                                 "Fantasy",
+                                "Historical",
                                 "Horror",
-                                "Mystery",
+                                "Noir",
                                 "Romance",
-                                "Sci-Fi",
+                                "Science Fiction",
                                 "Thriller",
+                                "Western",
                             ].map(_genre => (
                                 <Tag
                                     key={_genre}
@@ -120,6 +218,99 @@ export default function AIConfig() {
                                     }}>{`${_genre}`}</Tag>
                             ))}
                         </div>
+
+                        {errors.genre && (
+                            <Text className="!m-0" type="error">
+                                {errors.genre}
+                            </Text>
+                        )}
+                    </div>
+
+                    <div>
+                        <Text h3>Sub Genre</Text>
+                        <div className="flex flex-wrap gap-[0.5rem]">
+                            {{
+                                Action: [
+                                    "Disaster",
+                                    "Heroic Bloodshed",
+                                    "Martial Arts",
+                                    "Spy",
+                                    "Superhero ",
+                                    "War ",
+                                ],
+                                Adventure: ["Pirate", "Swashbuckler", "Samurai"],
+                                Comedy: [
+                                    "Action",
+                                    "Buddy",
+                                    "Dark/Black",
+                                    "Mockumentary",
+                                    "Parody ",
+                                    "Romantic ",
+                                    "Screwball ",
+                                    "Slapstick ",
+                                ],
+                                Drama: [
+                                    "Docudrama",
+                                    "Legal",
+                                    "Medical",
+                                    "Melodrama",
+                                    "Political",
+                                    "Psychological",
+                                    "Teen",
+                                ],
+                                Fantasy: ["Contemporary", "Dark", "High/Epic", "Urban"],
+                                Historical: [
+                                    "Alternate History",
+                                    "Biopic",
+                                    "Historical Epic",
+                                    "Historical Event",
+                                    "Historical Fiction",
+                                    "Period Piece",
+                                ],
+                                Horror: [
+                                    "Found Footage",
+                                    "Ghost",
+                                    "Monster",
+                                    "Slasher",
+                                    "Splatter",
+                                    "Zombie",
+                                    "Supernatural",
+                                ],
+                                Noir: ["Neo-noir", "Horror-noir", "Tech-noir"],
+                                Romance: [
+                                    "Historical",
+                                    "Paranormal",
+                                    "Comedy",
+                                    "Fantasy",
+                                    "Thriller",
+                                ],
+                                "Science Fiction": [
+                                    "Dystopian",
+                                    "Post-apocalyptic",
+                                    "Military",
+                                    "Steampunk",
+                                    "Tech Noir",
+                                    "Utopian",
+                                    "Space Opera",
+                                ],
+                                Thriller: ["Psychological", "Mystery", "Techno", "Political"],
+                                Western: ["Epic", "Revisionist", "Spaghetti"],
+                            }[genre]?.map(_genre => (
+                                <Tag
+                                    key={_genre}
+                                    className="cursor-pointer"
+                                    type={subGenre === _genre ? "success" : "default"}
+                                    onClick={() => {
+                                        setConfig({ subGenre: _genre });
+                                    }}>{`${_genre}`}</Tag>
+                            ))}
+                        </div>
+
+                        {errors.genre && (
+                            <Text className="!m-0" type="error">
+                                {errors.genre}
+                            </Text>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -161,6 +352,12 @@ export default function AIConfig() {
                                 Hight
                             </Tag>
                         </div>
+
+                        {errors.budget && (
+                            <Text className="!m-0" type="error">
+                                {errors.budget}
+                            </Text>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -169,16 +366,27 @@ export default function AIConfig() {
                         </Text>
                         <Input
                             className="max-sm:!w-full"
-                            type="secondary"
+                            type={errors.primaryStoryLocation ? "error" : "secondary"}
                             placeholder="eg. New York City"
                             value={primaryStoryLocation}
                             onChange={e => {
+                                const value = e.target.value;
+                                if (value.length < 4) {
+                                    setError("Min length is 3 letter", "primaryStoryLocation");
+                                } else if (errors.primaryStoryLocation) {
+                                    setError("", "primaryStoryLocation");
+                                }
                                 setConfig({ primaryStoryLocation: e.target.value });
                             }}
                             crossOrigin={undefined}
                             onPointerEnterCapture={undefined}
                             onPointerLeaveCapture={undefined}
                         />
+                        {errors.primaryStoryLocation && (
+                            <Text className="!m-0" type="error">
+                                {errors.primaryStoryLocation}
+                            </Text>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -389,39 +597,7 @@ export default function AIConfig() {
                         className="!w-fit"
                         disabled={loading}
                         type="secondary-light"
-                        onClick={async () => {
-                            const userId = localStorage.getItem("userId");
-                            if (!userId) {
-                                toast.error("userId not found");
-                                return;
-                            }
-                            setLoading(true);
-                            try {
-                                await createFilmScript({
-                                    episodeLength,
-                                    episodes,
-                                    genre,
-                                    budget,
-                                    primaryStoryLocation,
-                                    additionalElements,
-                                    desiredPrimaryFilmingLocation,
-                                    desiredPrimaryFilmingLocations,
-                                    emotionalEvents,
-                                    language,
-                                    mainCharacterEthnicity,
-                                    mainCharacters,
-                                    mainCharactersLength,
-                                    storyReference,
-                                    userId,
-                                });
-
-                                router.push("/response");
-                                setLoading(false);
-                            } catch (err) {
-                                toast.error((err as Error)?.message);
-                                setLoading(false);
-                            }
-                        }}
+                        onClick={handleSubmit}
                         placeholder={undefined}
                         onPointerEnterCapture={undefined}
                         onPointerLeaveCapture={undefined}>

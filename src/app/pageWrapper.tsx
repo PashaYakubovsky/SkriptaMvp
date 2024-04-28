@@ -3,21 +3,25 @@ import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Rubik } from "next/font/google";
 import { GeistProvider, CssBaseline } from "@geist-ui/core";
-import { gsap } from "gsap";
 
 import { Courier_Prime } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
+import { Session } from "next-auth";
+import { Preloader } from "./Preloader";
+import { AuthContainer } from "./AuthContainer";
 
-const cpFont = Courier_Prime({
+export const cpFont = Courier_Prime({
     weight: ["400", "700"],
     subsets: ["latin"],
 });
+const font = Rubik({ subsets: ["latin"] });
 
 interface PageWrapperProps {
     children: React.ReactNode;
+    session: Session;
 }
 
-const font = Rubik({ subsets: ["latin"] });
-const PageWrapper = ({ children }: PageWrapperProps) => {
+const PageWrapper = ({ children, session }: PageWrapperProps) => {
     useEffect(() => {
         const url = new URL(window.location.href);
         let userId = url.searchParams.get("userId");
@@ -35,45 +39,19 @@ const PageWrapper = ({ children }: PageWrapperProps) => {
     }, []);
 
     return (
-        <GeistProvider>
-            <CssBaseline />
-            <div className={font.className}>
-                <Preloader />
-                {children}
-                <Toaster />
-            </div>
-        </GeistProvider>
+        <SessionProvider session={session}>
+            <AuthContainer>
+                <GeistProvider>
+                    <CssBaseline />
+                    <div className={font.className}>
+                        <Preloader />
+                        {children}
+                        <Toaster />
+                    </div>
+                </GeistProvider>
+            </AuthContainer>
+        </SessionProvider>
     );
 };
 
 export default PageWrapper;
-
-const Preloader = () => {
-    const ref = React.useRef<HTMLDivElement>(null);
-    const [show, setShow] = React.useState(true);
-
-    useEffect(() => {
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
-            tl.to(ref.current, {
-                duration: 3,
-                opacity: 0,
-                delay: 1,
-                onComplete: () => {
-                    setShow(false);
-                },
-            });
-        });
-        return () => ctx.revert();
-    }, []);
-
-    if (!show) return null;
-
-    return (
-        <div
-            ref={ref}
-            className={`w-screen h-screen left-0 top-0 absolute text-center bg-black flex items-center justify-center text-8xl font-bold text-whit z-[100] text-white max-md:text-5xl ${cpFont.className}`}>
-            <span className="z-300 [text-shadow:0_0_10px_white]">Skripta</span>
-        </div>
-    );
-};

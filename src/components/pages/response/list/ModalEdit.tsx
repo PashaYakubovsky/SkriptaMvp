@@ -10,11 +10,13 @@ const ModalEdit = ({
     close,
     script,
     onUpdate,
+    type,
 }: {
     open: boolean;
     close: () => void;
     script: ISeries | null;
     onUpdate?: () => void;
+    type?: "edit" | "delete";
 }) => {
     const router = useRouter();
     const [name, setName] = useState("");
@@ -38,6 +40,23 @@ const ModalEdit = ({
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            setLoading(true);
+            if (!script?.id) {
+                toast.error("Script not found");
+                throw new Error("Script not found");
+            }
+            await axios.delete(`/api/series/${script.id}`);
+            setLoading(false);
+            toast.success("Script deleted");
+            onUpdate?.();
+        } catch (err) {
+            toast.error("Failed to delete script");
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         if (script) {
             setName(script.name ?? "");
@@ -47,18 +66,21 @@ const ModalEdit = ({
     return (
         <Modal visible={open} onClose={close}>
             <Modal.Title className="!w-full">
-                <Input
-                    className="!w-[20rem]"
-                    type="default"
-                    label="Name"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="eg. My Series Name"
-                    initialValue={script?.name ?? ""}
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}
-                    crossOrigin={undefined}
-                />
+                {type === "edit" && (
+                    <Input
+                        className="!w-[20rem]"
+                        type="default"
+                        label="Name"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        placeholder="eg. My Series Name"
+                        initialValue={script?.name ?? ""}
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}
+                        crossOrigin={undefined}
+                    />
+                )}
+                {type === "delete" && "Delete Script"}
             </Modal.Title>
 
             <Modal.Action
@@ -68,21 +90,27 @@ const ModalEdit = ({
                 placeholder={undefined}
                 passive
                 onClick={async () => {
-                    await handleUpdate();
+                    if (type === "edit") {
+                        await handleUpdate();
+                    }
+                    if (type === "delete") {
+                        await handleDelete();
+                    }
                     close();
                 }}>
-                Edit
+                {type === "edit" ? "Update" : "Delete"}
             </Modal.Action>
-            <Modal.Action
-                type="success"
-                onClick={() => {
-                    router.push(`/response/${script?.id}`);
-                }}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
-                placeholder={undefined}>
-                Go to Script
-            </Modal.Action>
+            {type === "edit" && (
+                <Modal.Action
+                    onClick={() => {
+                        router.push(`/response/${script?.id}`);
+                    }}
+                    onPointerEnterCapture={undefined}
+                    onPointerLeaveCapture={undefined}
+                    placeholder={undefined}>
+                    Go to Script
+                </Modal.Action>
+            )}
         </Modal>
     );
 };

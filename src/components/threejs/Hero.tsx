@@ -1,12 +1,14 @@
 import styles from "./Hero.module.scss";
 import React, { useRef, useMemo, memo, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { OrthographicCamera } from "@react-three/drei";
 import fragmentShader from "./fragmentShader.glsl";
 import vertexShader from "./vertexShader.glsl";
 
 const ParticlesShader = memo(() => {
+    const viewport = useThree(state => state.viewport);
+
     const renderRef =
         useRef<
             THREE.Points<
@@ -37,8 +39,8 @@ const ParticlesShader = memo(() => {
                     new THREE.Vector2(window.innerWidth, window.innerHeight)
                 ),
                 uDisplacementTexture: new THREE.Uniform(null),
-                uAngleScale: new THREE.Uniform(1.2),
-                uDisplacementScale: new THREE.Uniform(0.1),
+                uAngleScale: new THREE.Uniform(10),
+                uDisplacementScale: new THREE.Uniform(1),
                 uDisplacementSpeed: new THREE.Uniform(1),
                 uRandomScale: new THREE.Uniform(true),
             },
@@ -167,8 +169,7 @@ const ParticlesShader = memo(() => {
         displacement.current.canvas.style.position = "fixed";
         displacement.current.canvas.style.objectFit = "contain";
         displacement.current.canvas.style.aspectRatio = "1/1";
-        displacement.current.canvas.style.width = "320px";
-        displacement.current.canvas.style.height = "320px";
+
         displacement.current.canvas.style.border = "1px solid white";
         displacement.current.canvas.style.borderRadius = "0.5rem";
         displacement.current.canvas.style.top = "16px";
@@ -179,8 +180,12 @@ const ParticlesShader = memo(() => {
         displacement.current.context = displacement.current.canvas.getContext("2d")!;
         const context = displacement.current.context;
         // set aspect ratio
-        displacement.current.canvas.width = 320;
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        displacement.current.canvas.width = 320 * aspectRatio;
         displacement.current.canvas.height = 320;
+
+        displacement.current.canvas.style.width = 320 * aspectRatio + "px";
+        displacement.current.canvas.style.height = 320 + "px";
 
         context.fillRect(
             0,
@@ -196,7 +201,6 @@ const ParticlesShader = memo(() => {
         const canvasTexture = new THREE.CanvasTexture(displacement.current.canvas);
         displacement.current.texture = canvasTexture;
 
-        // document.body.append(displacement.current.canvas);
         if (document.body.contains(displacement.current.canvas)) {
             displacement.current.canvas.remove();
         }
@@ -273,14 +277,14 @@ const ParticlesShader = memo(() => {
                         heroMaterial.uniforms.uMouse.value.y = -150;
                         heroMaterial.uniforms.uMouse.value.z = 0;
                     }}
-                    position={[0, 0, -1]}
+                    position={[0, 0, 0]}
                     rotation={[0, 0, 0]}
                     matrixAutoUpdate={true}>
-                    <planeGeometry attach="geometry" args={[40, 20]} />
+                    <planeGeometry attach="geometry" args={[viewport.width, viewport.height, 1]} />
                     <meshBasicMaterial
                         attach="material"
                         color={new THREE.Color("red")}
-                        visible={false}
+                        // visible={false}
                         side={THREE.DoubleSide}
                     />
                 </mesh>
@@ -290,7 +294,7 @@ const ParticlesShader = memo(() => {
                     rotation={[0, 0, Math.PI]}
                     ref={renderRef}
                     geometry={heroGeometry}
-                    position={[0, 0, -1]}
+                    position={[0, 0, 0]}
                     scale={[1, 1, 1]}>
                     <shaderMaterial attach="material" {...heroMaterial} />
                 </points>
@@ -310,7 +314,7 @@ const Hero = () => {
                 decay={0}
                 intensity={Math.PI}
             />
-            <OrthographicCamera makeDefault position={[0, 0, 0]} zoom={40} />
+            <OrthographicCamera makeDefault position={[0, 0, 0]} zoom={35} />
             <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
 
             <ParticlesShader />

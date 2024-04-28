@@ -17,7 +17,7 @@ const gridComponents = {
                 flexWrap: "wrap",
                 justifyContent: "center",
                 width: "100%",
-                margin: "0 auto",
+                margin: "1rem auto",
                 gap: "1rem",
             }}>
             {children}
@@ -31,7 +31,7 @@ const gridComponents = {
     } & React.HTMLAttributes<HTMLDivElement>) => (
         <div
             {...props}
-            className="bg-gray-200 flex items-center justify-center text-2xl rounded-lg w-fit overflow-hidden">
+            className="bg-gray-200 flex items-center justify-center text-2xl rounded-lg w-fit overflow-hidden border border-gray-300 hover:scale-105 transition-all hover:border-emerald-600">
             {children}
         </div>
     ),

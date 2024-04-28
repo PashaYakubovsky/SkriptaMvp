@@ -20,21 +20,20 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const series = await Series.findById(id);
-        const history = series.history.slice() as ChatCompletionMessageParam[];
-        const isFirstMessage = history.every(message => message.role === "system");
+        const history = body.history.slice() as ChatCompletionMessageParam[];
+        const isFirstMessage = history.length <= 4;
 
         if (isFirstMessage) {
             history.push({
-                role: "user",
+                role: "system",
                 content:
-                    "Please write episode 1 while understanding that the series should feature one overarching story will mini-arcs throughout. Each episode should end on a minor or major cliffhanger to keep viewers coming back.",
+                    "write episodes while understanding that the series should feature one overarching story will mini-arcs throughout. Each episode should end on a minor or major cliffhanger to keep viewers coming back.",
             });
         }
 
         const response = await openai.chat.completions.create({
             model: "gpt-4",
-            messages: series.history,
+            messages: history,
         });
 
         history.push(response.choices[0].message);
@@ -69,9 +68,12 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        await Series.findByIdAndDelete(id);
+        const series = await Series.findByIdAndDelete(id);
 
-        return NextResponse.json({ message: "Your Series deleted" }, { status: HttpStatusCode.Ok });
+        return NextResponse.json(
+            { message: "Your Series deleted", series },
+            { status: HttpStatusCode.Ok }
+        );
     } catch (error) {
         return NextResponse.json({ message: error }, { status: HttpStatusCode.BadRequest });
     }
@@ -133,18 +135,16 @@ const getAiResponse = async (seriesId: string, userId: string) => {
                         2. Middle Scenes (50% of episode time given by user write actual time in minutes)
                         3. Climax (15% of episode time given by user write actual time in minutes)
                         4. Ending (15% of episode time given by user write actual time in minutes)
-                        Always return new episode synopsis on each request without additional questioning the user.
+
+                        On first request always return synopsis of the series;
+                       
+                        Always return new episode scenario on each request without additional questioning the user.
                         Return rich text field type response.
                     `,
                 },
                 {
                     role: "user",
                     content: prompt,
-                },
-                {
-                    role: "user",
-                    content:
-                        "Write episode 1 while understanding that the series should feature one overarching story with mini-arcs throughout. Each episode should end on a minor or major cliffhanger to keep viewers coming back.",
                 },
             ];
 
