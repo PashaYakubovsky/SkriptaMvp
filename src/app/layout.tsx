@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
     return (
         <html suppressHydrationWarning={true} lang="en">
-            <body className={inter.className}>
+            <body suppressHydrationWarning={true} className={inter.className}>
                 <PageWrapper session={session}>{children}</PageWrapper>
             </body>
         </html>

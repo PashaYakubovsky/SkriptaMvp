@@ -37,8 +37,6 @@ export const MainCharactersCreation = () => {
                                     setConfig({ mainCharacters: newMainCharacters });
                                 }}
                                 crossOrigin={undefined}
-                                onPointerEnterCapture={undefined}
-                                onPointerLeaveCapture={undefined}
                             />
                             <AiOutlineDelete
                                 onClick={() => {
@@ -60,9 +58,7 @@ export const MainCharactersCreation = () => {
                     onClick={() => {
                         setConfig({ mainCharacters: [...mainCharacters, ""] });
                     }}
-                    placeholder={undefined}
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}></Button>
+                    placeholder={undefined}></Button>
             </div>
         </div>
     );

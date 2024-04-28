@@ -144,12 +144,9 @@ export default function ResponsePage() {
 
                 <Button
                     loading={loading}
-                    onPointerEnterCapture={null}
                     type="secondary"
                     onClick={handleCreateNewEpisode}
-                    className="rounded-lg p-2 bg-indigo-600 text-zinc-100 active:scale-125 transition-all hover:bg-indigo-800"
-                    placeholder={undefined}
-                    onPointerLeaveCapture={undefined}>
+                    className="rounded-lg p-2 bg-indigo-600 text-zinc-100 active:scale-125 transition-all hover:bg-indigo-800">
                     Generate new episode
                 </Button>
             </div>

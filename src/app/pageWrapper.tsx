@@ -8,7 +8,7 @@ import { Courier_Prime } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { Session } from "next-auth";
 import { Preloader } from "./Preloader";
-import { AuthContainer } from "./AuthContainer";
+import AuthProvider from "./AuthProvider";
 
 export const cpFont = Courier_Prime({
     weight: ["400", "700"],
@@ -40,7 +40,7 @@ const PageWrapper = ({ children, session }: PageWrapperProps) => {
 
     return (
         <SessionProvider session={session}>
-            <AuthContainer>
+            <AuthProvider>
                 <GeistProvider>
                     <CssBaseline />
                     <div className={font.className}>
@@ -49,7 +49,7 @@ const PageWrapper = ({ children, session }: PageWrapperProps) => {
                         <Toaster />
                     </div>
                 </GeistProvider>
-            </AuthContainer>
+            </AuthProvider>
         </SessionProvider>
     );
 };

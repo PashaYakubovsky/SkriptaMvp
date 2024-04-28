@@ -75,8 +75,6 @@ const ModalEdit = ({
                         onChange={e => setName(e.target.value)}
                         placeholder="eg. My Series Name"
                         initialValue={script?.name ?? ""}
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}
                         crossOrigin={undefined}
                     />
                 )}
@@ -85,8 +83,6 @@ const ModalEdit = ({
 
             <Modal.Action
                 loading={loading}
-                onPointerEnterCapture={undefined}
-                onPointerLeaveCapture={undefined}
                 placeholder={undefined}
                 passive
                 onClick={async () => {
@@ -105,8 +101,6 @@ const ModalEdit = ({
                     onClick={() => {
                         router.push(`/response/${script?.id}`);
                     }}
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}
                     placeholder={undefined}>
                     Go to Script
                 </Modal.Action>

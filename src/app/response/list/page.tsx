@@ -75,14 +75,12 @@ const SeriesList = () => {
                     placeholder="Search"
                     width="100%"
                     crossOrigin={undefined}
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}
                 />
             </div>
 
             <div className="py-5">
                 <VirtuosoGrid
-                    style={{ height: 700, display: "flex" }}
+                    style={{ height: window.innerHeight - 200, display: "flex" }}
                     totalCount={config.filteredSeries.length}
                     components={gridComponents as any}
                     itemContent={index => {

@@ -62,6 +62,10 @@ export default function AIConfig() {
             setError("Genre is required", "genre");
             valid = false;
         }
+        if (!subGenre) {
+            setError("Sub Genre is required", "subGenre");
+            valid = false;
+        }
         if (!budget) {
             setError("Budget is required", "budget");
             valid = false;
@@ -147,8 +151,6 @@ export default function AIConfig() {
                                 setConfig({ episodes: value });
                             }}
                             crossOrigin={undefined}
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
                         />
                         {errors.episodes && (
                             <Text className="!m-0" type="error">
@@ -178,8 +180,6 @@ export default function AIConfig() {
 
                                 setConfig({ episodeLength: value });
                             }}
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
                             crossOrigin={undefined}
                         />
                         {errors.episodesLength && (
@@ -227,7 +227,7 @@ export default function AIConfig() {
                     </div>
 
                     <div>
-                        <Text h3>Sub Genre</Text>
+                        <Text h4>Sub Genre</Text>
                         <div className="flex flex-wrap gap-[0.5rem]">
                             {{
                                 Action: [
@@ -306,9 +306,9 @@ export default function AIConfig() {
                             ))}
                         </div>
 
-                        {errors.genre && (
+                        {errors.subGenre && (
                             <Text className="!m-0" type="error">
-                                {errors.genre}
+                                {errors.subGenre}
                             </Text>
                         )}
                     </div>
@@ -379,8 +379,6 @@ export default function AIConfig() {
                                 setConfig({ primaryStoryLocation: e.target.value });
                             }}
                             crossOrigin={undefined}
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
                         />
                         {errors.primaryStoryLocation && (
                             <Text className="!m-0" type="error">
@@ -404,8 +402,6 @@ export default function AIConfig() {
                                 setConfig({ mainCharactersLength: +e.target.value });
                             }}
                             crossOrigin={undefined}
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -494,8 +490,6 @@ export default function AIConfig() {
                                             setConfig({ emotionalEvents });
                                         }}
                                         crossOrigin={undefined}
-                                        onPointerEnterCapture={undefined}
-                                        onPointerLeaveCapture={undefined}
                                     />
                                     <AiOutlineDelete
                                         onClick={() => {
@@ -519,9 +513,7 @@ export default function AIConfig() {
                             onClick={() => {
                                 setConfig({ emotionalEvents: [...emotionalEvents, ""] });
                             }}
-                            placeholder={undefined}
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}></Button>
+                            placeholder={undefined}></Button>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -538,8 +530,6 @@ export default function AIConfig() {
                             }}
                             type="secondary"
                             placeholder="eg. coffee shop and hotel and beach and office building"
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -555,8 +545,6 @@ export default function AIConfig() {
                             }}
                             type="secondary"
                             placeholder="eg. Pride and Prejudice, Star Trek TNG, Blazing Saddles"
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -587,8 +575,6 @@ export default function AIConfig() {
                             }}
                             type="secondary"
                             placeholder="eg. mental instability, murder, expensive clothes, sparse product placement for 'Dior'"
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
                         />
                     </div>
 
@@ -598,9 +584,7 @@ export default function AIConfig() {
                         disabled={loading}
                         type="secondary-light"
                         onClick={handleSubmit}
-                        placeholder={undefined}
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}>
+                        placeholder={undefined}>
                         Generate Script
                     </Button>
                 </div>

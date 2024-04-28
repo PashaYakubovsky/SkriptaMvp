@@ -29,7 +29,7 @@ export default function Login() {
     useEffect(() => {
         // signOut();
         if (status === "authenticated") {
-            // router.push("/new");
+            router.push("/new");
         }
     }, [status]);
 
@@ -49,7 +49,7 @@ export default function Login() {
 
                 <Hero />
 
-                <div className="w-full gap-2 mb-4 flex flex-col bg-black relative z-10 ">
+                <form className="w-full gap-2 mb-4 flex flex-col bg-black relative z-10 ">
                     <Input
                         type={config.errorEmail ? "error" : "default"}
                         value={config.email}
@@ -69,9 +69,6 @@ export default function Login() {
                         className="w-full !text-white"
                         width="100%"
                         placeholder="Email"
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}
-                        crossOrigin={undefined}
                     />
                     <div className="relative w-full">
                         <Input
@@ -86,9 +83,6 @@ export default function Login() {
                             className="w-full !text-white"
                             width="100%"
                             placeholder="Password"
-                            onPointerEnterCapture={undefined}
-                            onPointerLeaveCapture={undefined}
-                            crossOrigin={undefined}
                         />
                         <button
                             onClick={() =>
@@ -105,7 +99,7 @@ export default function Login() {
                             )}
                         </button>
                     </div>
-                </div>
+                </form>
 
                 {/* CTA */}
                 <Button
@@ -117,10 +111,7 @@ export default function Login() {
                         } else {
                             router.push("/new");
                         }
-                    }}
-                    placeholder={undefined}
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}>
+                    }}>
                     {status === "unauthenticated" ? "Sign In" : "Go to app"}
                 </Button>
 
@@ -130,15 +121,12 @@ export default function Login() {
                         className="!mb-2"
                         onClick={() => {
                             signOut();
-                        }}
-                        placeholder={undefined}
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}>
+                        }}>
                         Sign Out
                     </Button>
                 )}
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 max-sm:w-full max-sm:flex-col">
                     <Button
                         onClick={() => {
                             if (status === "unauthenticated") {
@@ -146,10 +134,7 @@ export default function Login() {
                                     callbackUrl: "/new",
                                 });
                             }
-                        }}
-                        placeholder={undefined}
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}>
+                        }}>
                         <FaGithub className="mr-2" />
                         Sign in with Github
                     </Button>
@@ -161,10 +146,7 @@ export default function Login() {
                                     callbackUrl: "/new",
                                 });
                             }
-                        }}
-                        placeholder={undefined}
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}>
+                        }}>
                         <FaGoogle className="mr-2" />
                         Sign in with Google
                     </Button>
@@ -173,12 +155,7 @@ export default function Login() {
                 {/* Redirect to registration */}
                 <div className="mt-[1rem] text-sm text-white relative z-10">
                     Don't have an account?{" "}
-                    <Link
-                        className="!text-[#4B39EF]"
-                        href="/register"
-                        placeholder={undefined}
-                        onPointerEnterCapture={undefined}
-                        onPointerLeaveCapture={undefined}>
+                    <Link className="!text-[#4B39EF]" href="/register">
                         Sign Up here
                     </Link>
                 </div>

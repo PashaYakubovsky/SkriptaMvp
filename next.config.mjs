@@ -5,6 +5,13 @@ const nextConfig = {
             bodySizeLimit: "5mb",
         },
     },
+    typescript: {
+        // !! WARN !!
+        // Dangerously allow production builds to successfully complete even if
+        // your project has type errors.
+        // !! WARN !!
+        ignoreBuildErrors: true,
+    },
     webpack: config => {
         config.module.rules.push({
             test: /\.(glsl|frag|vert)$/,

@@ -18,9 +18,7 @@ export default function Home() {
                     }}
                     scale={1}
                     className="!w-fit !relative !z-10"
-                    placeholder={undefined}
-                    onPointerEnterCapture={undefined}
-                    onPointerLeaveCapture={undefined}>
+                    placeholder={undefined}>
                     Get Started
                     <div className="">
                         <IoIosArrowRoundForward className="w-[2.5rem] h-[2.5rem] text-black" />
