@@ -29,7 +29,7 @@ export default function Login() {
     useEffect(() => {
         // signOut();
         if (status === "authenticated") {
-            router.push("/new");
+            // router.push("/new");
         }
     }, [status]);
 
@@ -123,6 +123,20 @@ export default function Login() {
                     onPointerLeaveCapture={undefined}>
                     {status === "unauthenticated" ? "Sign In" : "Go to app"}
                 </Button>
+
+                {status === "unauthenticated" && (
+                    <Button
+                        width="100%"
+                        className="!mb-2"
+                        onClick={() => {
+                            signOut();
+                        }}
+                        placeholder={undefined}
+                        onPointerEnterCapture={undefined}
+                        onPointerLeaveCapture={undefined}>
+                        Sign Out
+                    </Button>
+                )}
 
                 <div className="flex gap-2">
                     <Button
