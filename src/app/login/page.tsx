@@ -124,7 +124,7 @@ export default function Login() {
                     {status === "unauthenticated" ? "Sign In" : "Go to app"}
                 </Button>
 
-                {status === "unauthenticated" && (
+                {status === "authenticated" && (
                     <Button
                         width="100%"
                         className="!mb-2"
