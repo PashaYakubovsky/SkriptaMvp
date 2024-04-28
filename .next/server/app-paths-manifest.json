@@ -1,6 +1,13 @@
 {
-  "/response/page": "app/response/page.js",
-  "/response/list/page": "app/response/list/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/filmScript/route": "app/api/filmScript/route.js",
   "/api/series/route": "app/api/series/route.js",
+  "/login/page": "app/login/page.js",
+  "/new/page": "app/new/page.js",
+  "/page": "app/page.js",
+  "/response/list/page": "app/response/list/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/configuration/page": "app/configuration/page.js",
+  "/response/page": "app/response/page.js",
   "/api/series/[id]/route": "app/api/series/[id]/route.js"
 }
