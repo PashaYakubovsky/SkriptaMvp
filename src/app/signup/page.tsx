@@ -30,7 +30,7 @@ export default function Login() {
     useEffect(() => {
         // signOut();
         if (status === "authenticated") {
-            // router.push("/new");
+            router.push("/new");
         }
     }, [status]);
 
