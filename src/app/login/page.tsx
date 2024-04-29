@@ -29,7 +29,7 @@ export default function Login() {
     useEffect(() => {
         // signOut();
         if (status === "authenticated") {
-            router.push("/new");
+            // router.push("/new");
         }
     }, [status]);
 
@@ -70,6 +70,11 @@ export default function Login() {
                         width="100%"
                         placeholder="Email"
                     />
+                    {config.errorEmail && (
+                        <Text className="!m-0" p type="error">
+                            {config.errorEmail}
+                        </Text>
+                    )}
                     <div className="relative w-full">
                         <Input
                             onChange={e => setConfig({ ...config, password: e.target.value })}
@@ -105,13 +110,24 @@ export default function Login() {
                 <Button
                     width="100%"
                     className="!mb-2"
-                    onClick={() => {
+                    onClick={async () => {
                         if (status === "unauthenticated") {
-                            signIn("credentials", {
-                                email: config.email,
-                                password: config.password,
-                                callbackUrl: "/new",
-                            });
+                            try {
+                                const res = await signIn("credentials", {
+                                    email: config.email,
+                                    password: config.password,
+                                    redirect: false,
+                                });
+                                if (res.error) {
+                                    return setConfig(state => ({
+                                        ...state,
+                                        errorEmail: "Invalid credentials",
+                                    }));
+                                }
+                                router.push("/new");
+                            } catch (err) {
+                                console.error(err);
+                            }
                         } else {
                             router.push("/new");
                         }

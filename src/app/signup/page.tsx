@@ -6,7 +6,8 @@ import { Text, Input, Button } from "@geist-ui/core";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Hero from "@/components/threejs/Hero";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
+import toast from "react-hot-toast";
 
 const isEmailValid = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,6 +33,20 @@ export default function Login() {
             // router.push("/new");
         }
     }, [status]);
+
+    const isValid = () => {
+        if (!isEmailValid(config.email)) {
+            setConfig(state => ({ ...state, errorEmail: "Invalid email" }));
+            return false;
+        }
+
+        if (config.password !== config.repeatPassword) {
+            setConfig(state => ({ ...state, errorPassword: "Passwords do not match" }));
+            return false;
+        }
+
+        return true;
+    };
 
     return (
         <div className="bg-black !h-screen">
@@ -125,7 +140,22 @@ export default function Login() {
                 </form>
 
                 {/* CTA */}
-                <Button width="100%" className="!mb-2" onClick={() => {}}>
+                <Button
+                    width="100%"
+                    className="!mb-2"
+                    onClick={() => {
+                        const valid = isValid();
+                        if (valid) {
+                            signIn("credentials", {
+                                email: config.email,
+                                password: config.password,
+                                repeatPassword: config.repeatPassword,
+                            }).catch(e => {
+                                console.error(e);
+                                toast.error("Error signing up");
+                            });
+                        }
+                    }}>
                     Sign Up
                 </Button>
             </div>

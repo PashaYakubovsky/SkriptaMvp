@@ -1,8 +1,8 @@
-// File: /Users/pashayakubovsky/Desktop/skripta/src/app/api/login/route.ts
-import * as entry from '../../../../../src/app/api/login/route.js'
+// File: /Users/pashayakubovsky/Desktop/skripta/src/app/api/auth/save/route.ts
+import * as entry from '../../../../../../src/app/api/auth/save/route.js'
 import type { NextRequest } from 'next/server.js'
 
-type TEntry = typeof import('../../../../../src/app/api/login/route.js')
+type TEntry = typeof import('../../../../../../src/app/api/auth/save/route.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{
