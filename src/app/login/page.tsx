@@ -107,7 +107,11 @@ export default function Login() {
                     className="!mb-2"
                     onClick={() => {
                         if (status === "unauthenticated") {
-                            signIn("credentials", {});
+                            signIn("credentials", {
+                                email: config.email,
+                                password: config.password,
+                                callbackUrl: "/new",
+                            });
                         } else {
                             router.push("/new");
                         }
@@ -155,7 +159,7 @@ export default function Login() {
                 {/* Redirect to registration */}
                 <div className="mt-[1rem] text-sm text-white relative z-10">
                     Don't have an account?{" "}
-                    <Link className="!text-[#4B39EF]" href="/register">
+                    <Link className="!text-[#4B39EF]" href="/signup">
                         Sign Up here
                     </Link>
                 </div>
