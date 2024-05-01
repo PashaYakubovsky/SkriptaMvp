@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Toaster } from "react-hot-toast";
 import { Rubik } from "next/font/google";
 import { GeistProvider, CssBaseline } from "@geist-ui/core";
@@ -22,22 +22,6 @@ interface PageWrapperProps {
 }
 
 const PageWrapper = ({ children, session }: PageWrapperProps) => {
-    useEffect(() => {
-        const url = new URL(window.location.href);
-        let userId = url.searchParams.get("userId");
-        if (!userId) {
-            userId = localStorage.getItem("userId");
-        }
-        if (!userId) {
-            userId = Math.random().toString(36).substring(7) + "";
-        }
-
-        localStorage.setItem("userId", userId);
-        url.searchParams.set("userId", userId);
-        const queryParams = url.searchParams.toString();
-        window.history.replaceState({}, "", `${url.pathname}?${queryParams}`);
-    }, []);
-
     return (
         <SessionProvider session={session}>
             <AuthProvider>
