@@ -28,16 +28,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         window.history.replaceState({}, "", `${url.pathname}?${queryParams}`);
     }, [session]);
 
-    if (session.status === "loading") {
-        return (
-            <div className="w-full bg-black h-full fixed left-0 top-0 z-100 flex place-items-center">
-                <Text h1 className="!text-white text-center !w-full">
-                    We are checking your authentication status...
-                </Text>
-            </div>
-        );
-    }
-
     return <>{children}</>;
 };
 
