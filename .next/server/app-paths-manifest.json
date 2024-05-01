@@ -3,15 +3,15 @@
   "/api/auth/signup/route": "app/api/auth/signup/route.js",
   "/api/auth/login/route": "app/api/auth/login/route.js",
   "/api/auth/save/route": "app/api/auth/save/route.js",
-  "/api/filmScript/route": "app/api/filmScript/route.js",
   "/api/series/[id]/route": "app/api/series/[id]/route.js",
-  "/api/series/route": "app/api/series/route.js",
+  "/api/filmScript/route": "app/api/filmScript/route.js",
   "/configuration/page": "app/configuration/page.js",
+  "/api/series/route": "app/api/series/route.js",
   "/new/page": "app/new/page.js",
   "/login/page": "app/login/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
   "/response/list/page": "app/response/list/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/response/page": "app/response/page.js",
   "/signup/page": "app/signup/page.js"
 }

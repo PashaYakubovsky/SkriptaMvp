@@ -97,6 +97,7 @@ export default function AIConfig() {
                 episodeLength,
                 episodes,
                 genre,
+                subGenre,
                 budget,
                 primaryStoryLocation,
                 additionalElements,
