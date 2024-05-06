@@ -13,6 +13,7 @@
     "@contentful/rich-text-html-renderer": "^16.3.5",
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/react": "^2.2.5",
+    "@gsap/react": "^2.1.1",
     "@react-three/drei": "^9.105.4",
     "@react-three/fiber": "^8.16.2",
     "@react-three/postprocessing": "^2.16.2",

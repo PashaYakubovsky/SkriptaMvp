@@ -21,15 +21,6 @@ export async function POST(req: NextRequest) {
         }
 
         const history = body.history.slice() as ChatCompletionMessageParam[];
-        const isFirstMessage = history.length <= 4;
-
-        if (isFirstMessage) {
-            history.push({
-                role: "system",
-                content:
-                    "write episodes while understanding that the series should feature one overarching story will mini-arcs throughout. Each episode should end on a minor or major cliffhanger to keep viewers coming back.",
-            });
-        }
 
         const response = await openai.chat.completions.create({
             model: "gpt-4",
@@ -125,11 +116,11 @@ const getAiResponse = async (seriesId: string, userId: string) => {
             const initialMessages: ChatCompletionMessageParam[] = [
                 {
                     role: "system",
-                    content: "You are a film script creation AI assistant.",
-                },
-                {
-                    role: "system",
                     content: `
+                        You are a film script creation AI assistant. 
+                        Write episodes while understanding that the series should feature one overarching story will mini-arcs throughout. 
+                        Each episode should end on a minor or major cliffhanger to keep viewers coming back.
+                        
                         Output Format:
                         1. Opening Scene (15% of episode time given by user write actual time in minutes)
                         2. Middle Scenes (50% of episode time given by user write actual time in minutes)
@@ -140,7 +131,7 @@ const getAiResponse = async (seriesId: string, userId: string) => {
                        
                         Always return new episode scenario on each request without additional questioning the user.
                         Return rich text field type response.
-                    `,
+                        `,
                 },
                 {
                     role: "user",
