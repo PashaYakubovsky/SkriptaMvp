@@ -32,8 +32,6 @@ const SeriesList = () => {
         loading: false,
     });
     useEffect(() => {
-        document.body.style.overflow = "hidden";
-
         const init = async () => {
             const userId = localStorage.getItem("userId") ?? "";
             try {

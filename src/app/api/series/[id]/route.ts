@@ -20,14 +20,24 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const history = body.history.slice() as ChatCompletionMessageParam[];
+        const history = body.history.slice() as (ChatCompletionMessageParam & { id: string })[];
 
         const response = await openai.chat.completions.create({
             model: "gpt-4",
             messages: history,
         });
 
-        history.push(response.choices[0].message);
+        for (const message of history) {
+            // if message don't have id then add id
+            if (!message.id) {
+                message.id = Math.random().toString();
+            }
+        }
+
+        history.push({
+            ...response.choices[0].message,
+            id: Math.random().toString(),
+        });
 
         const updatedSeries = await Series.findByIdAndUpdate(
             id,
@@ -113,7 +123,7 @@ const getAiResponse = async (seriesId: string, userId: string) => {
 
             if (!filmScript) throw new Error("No film script found.");
 
-            const initialMessages: ChatCompletionMessageParam[] = [
+            const initialMessages: (ChatCompletionMessageParam & { id: string })[] = [
                 {
                     role: "system",
                     content: `
@@ -132,10 +142,12 @@ const getAiResponse = async (seriesId: string, userId: string) => {
                         Always return new episode scenario on each request without additional questioning the user.
                         Return rich text field type response.
                         `,
+                    id: Math.random().toString(),
                 },
                 {
                     role: "user",
                     content: prompt,
+                    id: Math.random().toString(),
                 },
             ];
 

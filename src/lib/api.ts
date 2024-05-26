@@ -1,3 +1,4 @@
+import { aiResponse } from "@/app/response/page";
 import axios from "axios";
 
 export const createNewEpisode = async ({
@@ -5,9 +6,9 @@ export const createNewEpisode = async ({
     seriesId,
     message,
 }: {
-    history: { role: string; content: string }[];
+    history: aiResponse[];
     seriesId: string;
-    message?: { role: string; content: string };
+    message?: aiResponse;
 }) => {
     const h = [...history, message ?? { role: "user", content: "Create new episode" }];
     const response = await axios.post(`/api/series/${seriesId}`, { history: h });

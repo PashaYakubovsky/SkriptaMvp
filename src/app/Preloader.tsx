@@ -31,7 +31,8 @@ export const Preloader = () => {
             const tl = gsap.timeline();
             tl.from(pencilGroup, {
                 duration: 1,
-                x: -100,
+                x: 220,
+                rotate: -120,
                 opacity: 0,
                 ease: "power4.inOut",
             });

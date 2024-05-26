@@ -99,7 +99,8 @@ const ModalEdit = ({
             {type === "edit" && (
                 <Modal.Action
                     onClick={() => {
-                        router.push(`/response/${script?.id}`);
+                        const userId = localStorage.getItem("userId");
+                        router.push(`/response?seriesId=${script?.id}&userId=${userId}`);
                     }}
                     placeholder={undefined}>
                     Go to Script

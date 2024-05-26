@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: "Skripta",
-    description: "",
+    description: "Skripta is a script writing tool",
 };
 
 const PageWrapper = dynamic(() => import("./pageWrapper"), {
