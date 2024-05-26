@@ -3,16 +3,42 @@ import React from "react";
 import { gsap } from "gsap";
 import { cpFont } from "./pageWrapper";
 import { useGSAP } from "@gsap/react";
+import { create } from "zustand";
 
 gsap.registerPlugin(useGSAP);
+
+interface PreloaderConfig {
+    show: boolean;
+    setShow: (show: boolean) => void;
+    lastShowTimestamp: number;
+    setLastShowTimestamp: (lastShowTimestamp: number) => void;
+}
+const usePreloaderStore = create<PreloaderConfig>(set => ({
+    show: true,
+    setShow: (show: boolean) => set({ show }),
+    lastShowTimestamp: Date.now(),
+    setLastShowTimestamp: (lastShowTimestamp: number) => set({ lastShowTimestamp }),
+}));
 
 export const Preloader = () => {
     const ref = React.useRef<HTMLDivElement>(null);
     const svgRef = React.useRef<HTMLDivElement>(null);
-    const [show, setShow] = React.useState(true);
+    const show = usePreloaderStore(state => state.show);
+    const setShow = usePreloaderStore(state => state.setShow);
+    const lastShowTimestamp = usePreloaderStore(state => state.lastShowTimestamp);
+    const setLastShowTimestamp = usePreloaderStore(state => state.setLastShowTimestamp);
 
     useGSAP(
         () => {
+            const currentTime = Date.now();
+            const timeDiff = currentTime - lastShowTimestamp;
+
+            if (timeDiff < 5000) {
+                return;
+            }
+
+            setLastShowTimestamp(currentTime);
+
             const pencilGroup = svgRef.current?.querySelector("#pencilGroup");
             const skriptaTextGroup = svgRef.current?.querySelector("#skriptaTextGroup");
             const iLetterGroup = svgRef.current?.querySelector("#iLetterGroup");

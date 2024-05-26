@@ -1,7 +1,7 @@
 import { ISeries } from "@/models/Series";
 import { Modal } from "@geist-ui/core";
 import axios from "axios";
-import { useState } from "react";
+import { memo, useState } from "react";
 import toast from "react-hot-toast";
 
 const ModalRefreshEpisode = ({
@@ -69,4 +69,4 @@ const ModalRefreshEpisode = ({
     );
 };
 
-export default ModalRefreshEpisode;
+export default memo(ModalRefreshEpisode);

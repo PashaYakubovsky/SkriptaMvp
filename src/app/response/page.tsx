@@ -166,66 +166,72 @@ export default function ResponsePage() {
     }, [seriesId]);
 
     return (
-        <main className="flex min-h-screen flex-col items-start flex-start mb-[2rem] gap-5">
-            <header
-                id="header"
-                className="h-[90px] bg-[#000] text-lg pt-[3rem] w-full text-center text-white relative">
-                <Text h2 className="relative z-10 px-4">
-                    Here you go...
-                </Text>
-            </header>
+        <>
+            <main className="flex min-h-screen flex-col items-start flex-start mb-[2rem] gap-5">
+                <header
+                    id="header"
+                    className="h-[90px] bg-[#000] text-lg pt-[3rem] w-full text-center text-white relative">
+                    <Text h2 className="relative z-10 px-4">
+                        Here you go...
+                    </Text>
+                </header>
 
-            <div className="flex flex-col gap-5 px-4 xl:max-w-[1200px] m-auto h-full">
-                {history.map(async (item, index) => {
-                    const doc = await richTextFromMarkdown(item.content);
-                    const html = documentToHtmlString(doc);
-                    return (
-                        <Card key={item?.id ?? index} className={`p-4 relative z-10 my-2`}>
-                            <h3 className="font-bold">
-                                {index === 0 ? "Synopsys" : `Episode ${index}`}
-                            </h3>
+                <div className="flex flex-col gap-5 px-4 xl:max-w-[1200px] m-auto h-full">
+                    {history.map(async (item, index) => {
+                        const doc = await richTextFromMarkdown(item.content);
+                        const html = documentToHtmlString(doc);
+                        return (
+                            <Card key={item?.id ?? index} className={`p-4 relative z-10 my-2`}>
+                                <h3 className="font-bold">
+                                    {index === 0 ? "Synopsys" : `Episode ${index}`}
+                                </h3>
 
-                            <p
-                                className={`text-lg ${font.className} ${styles.episode}`}
-                                dangerouslySetInnerHTML={{
-                                    __html: html,
-                                }}></p>
+                                <p
+                                    className={`text-lg ${font.className} ${styles.episode}`}
+                                    dangerouslySetInnerHTML={{
+                                        __html: html,
+                                    }}></p>
 
-                            <HiRefresh
-                                className={`w-4 h-4 ${
-                                    refreshLoading && refreshId === item?.id ? "animate-spin" : ""
-                                } absolute right-4 top-4 cursor-pointer`}
-                                onClick={() => {
-                                    setConfig(state => ({
-                                        ...state,
-                                        refreshId: item?.id,
-                                        refreshLoading: true,
-                                    }));
-                                }}
-                                title={
-                                    index === 0 ? "Refresh synopsys" : "Refresh episode " + index
-                                }
-                            />
-                        </Card>
-                    );
-                })}
+                                <HiRefresh
+                                    className={`w-4 h-4 ${
+                                        refreshLoading && refreshId === item?.id
+                                            ? "animate-spin"
+                                            : ""
+                                    } absolute right-4 top-4 cursor-pointer`}
+                                    onClick={() => {
+                                        setConfig(state => ({
+                                            ...state,
+                                            refreshId: item?.id,
+                                            refreshLoading: true,
+                                        }));
+                                    }}
+                                    title={
+                                        index === 0
+                                            ? "Refresh synopsys"
+                                            : "Refresh episode " + index
+                                    }
+                                />
+                            </Card>
+                        );
+                    })}
 
-                <Button
-                    loading={loading}
-                    type="secondary"
-                    onClick={handleCreateNewEpisode}
-                    className="rounded-lg p-2 bg-indigo-600 text-zinc-100 active:scale-125 transition-all hover:bg-indigo-800">
-                    Generate new episode
-                </Button>
+                    <Button
+                        loading={loading}
+                        type="secondary"
+                        onClick={handleCreateNewEpisode}
+                        className="rounded-lg p-2 bg-indigo-600 text-zinc-100 active:scale-125 transition-all hover:bg-indigo-800">
+                        Generate new episode
+                    </Button>
+                </div>
+            </main>
 
-                <ModalRefreshEpisode
-                    close={() => setConfig(state => ({ ...state, refreshId: null }))}
-                    refreshId={refreshId ?? ""}
-                    open={refreshId !== null}
-                    scriptId={seriesId}
-                    onUpdate={handleAfterRefresh}
-                />
-            </div>
-        </main>
+            <ModalRefreshEpisode
+                close={() => setConfig(state => ({ ...state, refreshId: null }))}
+                refreshId={refreshId ?? ""}
+                open={refreshId !== null}
+                scriptId={seriesId}
+                onUpdate={handleAfterRefresh}
+            />
+        </>
     );
 }
