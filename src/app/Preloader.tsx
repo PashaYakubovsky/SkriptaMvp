@@ -34,6 +34,8 @@ export const Preloader = () => {
             const timeDiff = currentTime - lastShowTimestamp;
 
             if (timeDiff < 5000) {
+                // don't show preloader if it was shown less than 5 seconds ago
+                setShow(false);
                 return;
             }
 
