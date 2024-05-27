@@ -41,9 +41,25 @@ const useResponsePage = create<ResponsePageConfig>(() => ({
     refreshLoading: false,
 }));
 
+const handlePrepareHistory = async (history: aiResponse[]) => {
+    const h = history.filter(
+        message =>
+            message.role !== "user" &&
+            message.role !== "system" &&
+            message.content !== "You are a film scenario creation AI assistant."
+    );
+
+    for (let i = 0; i < h.length; i++) {
+        const doc = await richTextFromMarkdown(h[i].content);
+        const html = documentToHtmlString(doc);
+        h[i].html = html;
+    }
+
+    return h;
+};
+
 export default function ResponsePage() {
     const router = useRouter();
-    const history = useResponsePage(state => state.history);
     const setConfig = useCallback(
         (
             state: Partial<ResponsePageConfig> | ((state: ResponsePageConfig) => ResponsePageConfig)
@@ -59,6 +75,8 @@ export default function ResponsePage() {
         },
         []
     );
+
+    const history = useResponsePage(state => state.history);
     const loading = useResponsePage(state => state.loading);
     const _history = useResponsePage(state => state._history);
     const refreshId = useResponsePage(state => state.refreshId);
@@ -97,19 +115,7 @@ export default function ResponsePage() {
 
                 let _history = history;
 
-                const h = history.filter(
-                    message =>
-                        message.role !== "user" &&
-                        message.role !== "system" &&
-                        message.content !== "You are a film scenario creation AI assistant."
-                );
-
-                for (let i = 0; i < h.length; i++) {
-                    const doc = await richTextFromMarkdown(h[i].content);
-                    const html = documentToHtmlString(doc);
-                    h[i].html = html;
-                }
-
+                const h = await handlePrepareHistory(history);
                 setConfig({ history: h, _history, loading: false });
             } catch (err) {
                 setConfig({
@@ -135,18 +141,7 @@ export default function ResponsePage() {
                 series: ISeries & { history: aiResponse[]; id: string };
             };
 
-            const h = response.series.history.filter(
-                message =>
-                    message.role !== "user" &&
-                    message.role !== "system" &&
-                    message.content !== "You are a film scenario creation AI assistant."
-            );
-
-            for (let i = 0; i < h.length; i++) {
-                const doc = await richTextFromMarkdown(h[i].content);
-                const html = documentToHtmlString(doc);
-                h[i].html = html;
-            }
+            const h = await handlePrepareHistory(history);
             setConfig({ history: h, _history: response.series.history, loading: false });
             toast.success("New episode created");
         } catch (error) {
@@ -165,13 +160,7 @@ export default function ResponsePage() {
         const responseJson = response.data;
         let history = responseJson.data.history as aiResponse[];
 
-        const h = history.filter(
-            message =>
-                message.role !== "user" &&
-                message.role !== "system" &&
-                message.content !== "You are a film scenario creation AI assistant."
-        );
-
+        const h = await handlePrepareHistory(history);
         setConfig(state => ({
             ...state,
             history: h,
