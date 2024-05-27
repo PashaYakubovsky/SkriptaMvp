@@ -2,7 +2,7 @@
 import styles from "./page.module.scss";
 import { ISeries } from "@/models/Series";
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import toast from "react-hot-toast";
 import { Text, Button, Card } from "@geist-ui/core";
 import { Courier_Prime } from "next/font/google";
@@ -11,15 +11,20 @@ import { richTextFromMarkdown } from "@contentful/rich-text-from-markdown";
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 import { createNewEpisode } from "@/lib/api";
 import { HiRefresh } from "react-icons/hi";
-import ModalRefreshEpisode from "@/components/pages/response/ModalRefreshEpisode";
 import { create } from "zustand";
+import dynamic from "next/dynamic";
+
+const ModalRefreshEpisode = dynamic(
+    () => import("@/components/pages/response/ModalRefreshEpisode"),
+    { ssr: false }
+);
 
 const font = Courier_Prime({
     weight: ["400", "700"],
     subsets: ["latin"],
 });
 
-export type aiResponse = { role: string; content: string; id: string };
+export type aiResponse = { role: string; content: string; id: string; html?: string };
 
 interface ResponsePageConfig {
     history: aiResponse[];
@@ -28,7 +33,7 @@ interface ResponsePageConfig {
     refreshId: string | null;
     refreshLoading: boolean;
 }
-const useResponsePage = create<ResponsePageConfig>((set, get) => ({
+const useResponsePage = create<ResponsePageConfig>(() => ({
     history: [],
     loading: false,
     _history: [],
@@ -40,7 +45,18 @@ export default function ResponsePage() {
     const router = useRouter();
     const history = useResponsePage(state => state.history);
     const setConfig = useCallback(
-        (fn: (state: ResponsePageConfig) => ResponsePageConfig) => useResponsePage.setState(fn),
+        (
+            state: Partial<ResponsePageConfig> | ((state: ResponsePageConfig) => ResponsePageConfig)
+        ) => {
+            if (typeof state === "function") {
+                useResponsePage.setState(state);
+            } else {
+                useResponsePage.setState({
+                    ...useResponsePage.getState(),
+                    ...state,
+                });
+            }
+        },
         []
     );
     const loading = useResponsePage(state => state.loading);
@@ -55,17 +71,14 @@ export default function ResponsePage() {
         const init = async () => {
             if (loading) return;
 
-            setConfig(state => {
-                return { ...state, loading: true };
-            });
+            setConfig({ loading: true });
 
             try {
-                const seriesId = params.get("seriesId") ?? "";
+                const seriesId = params ? params.get("seriesId") ?? "new" : "new";
                 const userId = localStorage.getItem("userId");
                 const response = await axios.get(`/api/series/${seriesId}?userId=${userId}`);
                 const responseJson = response.data;
                 let history = responseJson.data.history as aiResponse[];
-
                 if (responseJson.new) {
                     // replace query param
                     router.replace(`/response?seriesId=${responseJson.data.id}`);
@@ -90,13 +103,17 @@ export default function ResponsePage() {
                         message.role !== "system" &&
                         message.content !== "You are a film scenario creation AI assistant."
                 );
-                setConfig(state => ({ ...state, history: h, _history, loading: false }));
+
+                for (let i = 0; i < h.length; i++) {
+                    const doc = await richTextFromMarkdown(h[i].content);
+                    const html = documentToHtmlString(doc);
+                    h[i].html = html;
+                }
+
+                setConfig({ history: h, _history, loading: false });
             } catch (err) {
-                setConfig(state => {
-                    return {
-                        ...state,
-                        loading: false,
-                    };
+                setConfig({
+                    loading: false,
                 });
                 console.error(err);
                 toast.error("Failed to fetch data");
@@ -107,11 +124,10 @@ export default function ResponsePage() {
     }, []);
 
     const handleCreateNewEpisode = useCallback(async () => {
-        setConfig(state => {
-            return { ...state, loading: true };
+        setConfig({
+            loading: true,
         });
         try {
-            console.log("create new episode", seriesId);
             const response = (await createNewEpisode({
                 history: _history,
                 seriesId: seriesId,
@@ -125,23 +141,24 @@ export default function ResponsePage() {
                     message.role !== "system" &&
                     message.content !== "You are a film scenario creation AI assistant."
             );
-            setConfig(state => {
-                return { ...state, history: h, _history: response.series.history, loading: false };
-            });
+
+            for (let i = 0; i < h.length; i++) {
+                const doc = await richTextFromMarkdown(h[i].content);
+                const html = documentToHtmlString(doc);
+                h[i].html = html;
+            }
+            setConfig({ history: h, _history: response.series.history, loading: false });
             toast.success("New episode created");
         } catch (error) {
             console.error(error);
-            setConfig(state => {
-                return { ...state, loading: false };
-            });
+            setConfig({ loading: false });
         }
     }, [_history, seriesId]);
 
     const handleAfterRefresh = useCallback(async () => {
-        setConfig(state => ({
-            ...state,
+        setConfig({
             refreshLoading: false,
-        }));
+        });
 
         const userId = localStorage.getItem("userId");
         const response = await axios.get(`/api/series/${seriesId}?userId=${userId}`);
@@ -166,7 +183,7 @@ export default function ResponsePage() {
     }, [seriesId]);
 
     return (
-        <>
+        <div>
             <main className="flex min-h-screen flex-col items-start flex-start mb-[2rem] gap-5">
                 <header
                     id="header"
@@ -178,8 +195,6 @@ export default function ResponsePage() {
 
                 <div className="flex flex-col gap-5 px-4 xl:max-w-[1200px] m-auto h-full">
                     {history.map(async (item, index) => {
-                        const doc = await richTextFromMarkdown(item.content);
-                        const html = documentToHtmlString(doc);
                         return (
                             <Card key={item?.id ?? index} className={`p-4 relative z-10 my-2`}>
                                 <h3 className="font-bold">
@@ -188,9 +203,7 @@ export default function ResponsePage() {
 
                                 <p
                                     className={`text-lg ${font.className} ${styles.episode}`}
-                                    dangerouslySetInnerHTML={{
-                                        __html: html,
-                                    }}></p>
+                                    dangerouslySetInnerHTML={{ __html: item?.html ?? "" }}></p>
 
                                 <HiRefresh
                                     className={`w-4 h-4 ${
@@ -226,12 +239,12 @@ export default function ResponsePage() {
             </main>
 
             <ModalRefreshEpisode
-                close={() => setConfig(state => ({ ...state, refreshId: null }))}
+                close={() => setConfig({ refreshId: null })}
                 refreshId={refreshId ?? ""}
                 open={refreshId !== null}
                 scriptId={seriesId}
                 onUpdate={handleAfterRefresh}
             />
-        </>
+        </div>
     );
 }

@@ -4,7 +4,7 @@ import { IoEyeOffOutline } from "react-icons/io5";
 import { Text, Input, Button, Link } from "@geist-ui/core";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Hero from "@/components/threejs/Hero";
 import { useSession, signIn, signOut } from "next-auth/react";
 
@@ -16,7 +16,7 @@ const isEmailValid = (email: string) => {
 };
 
 export default function Login() {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
 
     const [config, setConfig] = useState({
         showPassword: false,
@@ -25,13 +25,6 @@ export default function Login() {
         errorEmail: "",
     });
     const router = useRouter();
-
-    useEffect(() => {
-        // signOut();
-        if (status === "authenticated") {
-            // router.push("/new");
-        }
-    }, [status]);
 
     return (
         <div className="bg-black !h-screen">
@@ -49,7 +42,7 @@ export default function Login() {
 
                 <Hero />
 
-                <form className="w-full gap-2 mb-4 flex flex-col bg-black relative z-10 ">
+                <div className="w-full gap-2 mb-4 flex flex-col bg-black relative z-10 ">
                     <Input
                         type={config.errorEmail ? "error" : "default"}
                         value={config.email}
@@ -90,12 +83,14 @@ export default function Login() {
                             placeholder="Password"
                         />
                         <button
-                            onClick={() =>
+                            type="button"
+                            onClick={e => {
+                                e.stopPropagation();
                                 setConfig(state => ({
                                     ...state,
                                     showPassword: !config.showPassword,
-                                }))
-                            }
+                                }));
+                            }}
                             className="text-white">
                             {config.showPassword ? (
                                 <IoEyeOutline className="absolute right-2 top-[50%] translate-y-[-50%] cursor-pointer w-[1.5rem] h-[1.5rem]" />
@@ -104,7 +99,7 @@ export default function Login() {
                             )}
                         </button>
                     </div>
-                </form>
+                </div>
 
                 {/* CTA */}
                 <Button

@@ -1,5 +1,5 @@
 "use client";
-import React, { memo } from "react";
+import React from "react";
 import { Toaster } from "react-hot-toast";
 import { Rubik } from "next/font/google";
 import { GeistProvider, CssBaseline } from "@geist-ui/core";
@@ -38,4 +38,4 @@ const PageWrapper = ({ children, session }: PageWrapperProps) => {
     );
 };
 
-export default memo(PageWrapper);
+export default PageWrapper;

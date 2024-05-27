@@ -64,7 +64,7 @@ export default function Login() {
 
                 <Hero />
 
-                <form className="w-full gap-2 mb-4 flex flex-col bg-black relative z-10 ">
+                <div className="w-full gap-2 mb-4 flex flex-col bg-black relative z-10 ">
                     <Input
                         type={config.errorEmail ? "error" : "default"}
                         value={config.email}
@@ -137,7 +137,7 @@ export default function Login() {
                         width="100%"
                         placeholder="Repeat Password"
                     />
-                </form>
+                </div>
 
                 {/* CTA */}
                 <Button
@@ -150,6 +150,7 @@ export default function Login() {
                                 email: config.email,
                                 password: config.password,
                                 repeatPassword: config.repeatPassword,
+                                callbackUrl: "/new",
                             }).catch(e => {
                                 console.error(e);
                                 toast.error("Error signing up");

@@ -1,4 +1,3 @@
-import { ISeries } from "@/models/Series";
 import { Modal } from "@geist-ui/core";
 import axios from "axios";
 import { memo, useState } from "react";

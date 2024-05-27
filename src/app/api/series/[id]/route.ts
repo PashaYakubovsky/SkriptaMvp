@@ -151,6 +151,18 @@ const getAiResponse = async (seriesId: string, userId: string) => {
                 },
             ];
 
+            // generate synopsis
+            const response = await openai.chat.completions.create({
+                model: "gpt-4",
+                messages: initialMessages,
+            });
+
+            initialMessages.push({
+                ...response.choices[0].message,
+                id: Math.random().toString(),
+            });
+
+            // create new series
             const newSeries = await Series.create({
                 userId,
                 filmScriptId: filmScript.id,
